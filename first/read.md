@@ -1,0 +1,86 @@
+# Lambda using java
+##Build
+mvn package
+this will use the shade plugin.
+## Deployment
+When you package and upload this code to create your Lambda function, you specify the 
+com.serverless.first.Hello::handleRequest method reference as the handler.
+
+##Testing Data
+{
+  "firstName": "Mohammad",
+  "lastName": "Shalabi"
+}
+
+##list files in jar
+jar tf ./target/first-1.0-SNAPSHOT-shaded.jar
+
+
+##Gateway API
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2018-12-04T21:53:25Z",
+    "title": "HelloJava"
+  },
+  "host": "z0jc9yihz4.execute-api.us-east-1.amazonaws.com",
+  "basePath": "/dev",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Empty": {
+      "type": "object",
+      "title": "Empty Schema"
+    }
+  }
+}

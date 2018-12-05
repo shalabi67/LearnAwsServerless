@@ -5,17 +5,17 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName="authors")
 public class Author {
-	private Long authorId;
+	private String authorId;
 	private String firstName;
 	private String lastName;
 	private String homePhoneNumber;
 
 	@DynamoDBHashKey(attributeName="authorId")
-	public Long getAuthorId() {
+	public String getAuthorId() {
 		return authorId;
 	}
 
-	public void setAuthorId(Long authorId) {
+	public void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
 

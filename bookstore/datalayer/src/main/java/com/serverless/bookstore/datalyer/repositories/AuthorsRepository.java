@@ -5,15 +5,18 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.serverless.bookstore.datalyer.modules.Author;
+import com.serverless.bookstore.datalyer.modules.Id;
 
 import java.util.List;
 
 public class AuthorsRepository {
-	private AmazonDynamoDB dynamoDb;
+	private static AmazonDynamoDB dynamoDb = AmazonDynamoDBClientBuilder.standard().build();
 
+	/*
 	public AuthorsRepository() {
 		initDynamoDbClient();
 	}
+	*/
 
 	public Author getAuthor(Long authorId) {
 		DynamoDBMapper mapper = new DynamoDBMapper(dynamoDb);
@@ -43,8 +46,19 @@ public class AuthorsRepository {
 		return authors;
 	}
 
+	public Author addAuthor(Author author) {
+		if(author.getAuthorId() == null || author.getAuthorId().isEmpty()) {
+			author.setAuthorId(Id.getId());
+		}
+
+		DynamoDBMapper mapper = new DynamoDBMapper(dynamoDb);
+		mapper.save(author);
+
+		return author;
+	}
+
 	private void initDynamoDbClient() {
-		//dynamoDb = AmazonDynamoDBClientBuilder.standard().build();
-		dynamoDb = AmazonDynamoDBClientBuilder.defaultClient();
+		dynamoDb = AmazonDynamoDBClientBuilder.standard().build();
+		//dynamoDb = AmazonDynamoDBClientBuilder.defaultClient();
 	}
 }

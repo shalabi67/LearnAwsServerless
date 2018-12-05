@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.serverless.bookstore</groupId>
-    <artifactId>base</artifactId>
+    <artifactId>bookstore</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>

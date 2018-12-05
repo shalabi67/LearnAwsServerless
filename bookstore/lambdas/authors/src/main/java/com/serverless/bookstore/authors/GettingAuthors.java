@@ -17,11 +17,14 @@ public class GettingAuthors implements RequestHandler<Void, List<Author>> {
 		*/
 		AuthorsRepository authorsRepository = new AuthorsRepository();
 
+		/*
 		Author author = authorsRepository.getAuthor(1L);
 
 		List<Author> authors = new ArrayList<>();
 		authors.add(author);
 		return authors;
+		*/
+		return authorsRepository.getAuthors();
 	}
 
 }

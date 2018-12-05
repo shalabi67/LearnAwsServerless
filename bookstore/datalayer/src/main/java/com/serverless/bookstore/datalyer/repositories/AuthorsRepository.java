@@ -3,6 +3,7 @@ package com.serverless.bookstore.datalyer.repositories;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.serverless.bookstore.datalyer.modules.Author;
 
 import java.util.List;
@@ -35,8 +36,15 @@ public class AuthorsRepository {
 		return null;
 		*/
 	}
+	public List<Author> getAuthors() {
+		DynamoDBMapper mapper = new DynamoDBMapper(dynamoDb);
+		List<Author> authors = mapper.scan(Author.class, new DynamoDBScanExpression());
+
+		return authors;
+	}
 
 	private void initDynamoDbClient() {
-		dynamoDb = AmazonDynamoDBClientBuilder.standard().build();
+		//dynamoDb = AmazonDynamoDBClientBuilder.standard().build();
+		dynamoDb = AmazonDynamoDBClientBuilder.defaultClient();
 	}
 }

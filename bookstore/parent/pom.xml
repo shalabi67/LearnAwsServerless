@@ -16,6 +16,7 @@
         <lambdasVersion>1.0-SNAPSHOT</lambdasVersion>
         <parentVersion>1.0-SNAPSHOT</parentVersion>
         <authorsVersion>1.0-SNAPSHOT</authorsVersion>
+        <securityVersion>1.0-SNAPSHOT</securityVersion>
     </properties>
 
     <dependencies>

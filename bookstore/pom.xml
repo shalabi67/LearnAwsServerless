@@ -12,6 +12,7 @@
         <module>parent</module>
         <module>datalayer</module>
         <module>lambdas</module>
+        <module>security</module>
 
     </modules>
 

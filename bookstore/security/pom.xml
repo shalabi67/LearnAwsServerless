@@ -10,8 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lambdas</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>security</artifactId>
 
     <dependencies>
         <dependency>
@@ -19,15 +18,5 @@
             <artifactId>datalayer</artifactId>
             <version>${datalyerVersion}</version>
         </dependency>
-        <dependency>
-            <groupId>com.serverless.bookstore</groupId>
-            <artifactId>security</artifactId>
-            <version>${securityVersion}</version>
-        </dependency>
     </dependencies>
-
-
-    <modules>
-        <module>authors</module>
-    </modules>
 </project>

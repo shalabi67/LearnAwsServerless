@@ -1,8 +1,12 @@
 package com.serverless.bookstore.security.modules;
 
+import com.serverless.bookstore.security.builders.PolicyDocumentSerializer;
+
+import java.util.Map;
+
 public class Policy {
 	private String principalId;
-	private PolicyDocument policyDocument;
+	protected PolicyDocument policyDocument;
 	private Context context;
 	private String usageIdentifierKey;
 
@@ -22,10 +26,9 @@ public class Policy {
 		this.principalId = principalId;
 	}
 
-	public PolicyDocument getPolicyDocument() {
-		return policyDocument;
+	public Map<String, Object> getPolicyDocument() {
+		return PolicyDocumentSerializer.serialize(policyDocument);
 	}
-
 	public void setPolicyDocument(PolicyDocument policyDocument) {
 		this.policyDocument = policyDocument;
 	}

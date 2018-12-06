@@ -6,6 +6,7 @@ import com.serverless.bookstore.security.builders.PolicyBuilder;
 import com.serverless.bookstore.security.modules.AuthorizationRequest;
 import com.serverless.bookstore.security.modules.Policy;
 import com.serverless.bookstore.security.builders.PolicyStatementBuilder;
+import com.serverless.bookstore.security.modules.Statement;
 
 public class CustomAuthorizer implements RequestHandler<AuthorizationRequest, Policy> {
 
@@ -16,11 +17,11 @@ public class CustomAuthorizer implements RequestHandler<AuthorizationRequest, Po
 	private Policy createPolicy(AuthorizationRequest authorizationRequest) {
 		PolicyStatementBuilder policyStatementBuilder = new PolicyStatementBuilder();
 		policyStatementBuilder.version("2012-10-17");
-		String permission = "deny";
-		if(authorizationRequest.getAuthorizationToken().equalsIgnoreCase("allow")) {
-			permission = "allow";
+		String effect = Statement.DENY;
+		if(authorizationRequest.getAuthorizationToken().equalsIgnoreCase(Statement.ALLOW)) {
+			effect = Statement.ALLOW;
 		}
-		policyStatementBuilder.addStatement("execute-api:Invoke", "allow", authorizationRequest.getMethodArn());
+		policyStatementBuilder.addStatement("execute-api:Invoke", effect, authorizationRequest.getMethodArn());
 		PolicyBuilder policyBuilder = new PolicyBuilder("user-id::123", policyStatementBuilder.build());
 		return policyBuilder.build();
 	}

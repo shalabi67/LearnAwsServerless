@@ -1,40 +1,43 @@
 package com.serverless.bookstore.security.modules;
 
 public class Statement {
-	private String Action;
-	private String Effect;
-	private String Resource;
+	public static String ALLOW = "allow";
+	public static String DENY = "deny";
+
+	private String action;
+	private String effect;
+	private String resource;
 
 	public Statement(String action, String effect, String resource) {
-		Action = action;
-		Effect = effect;
-		Resource = resource;
+		this.action = action;
+		this.effect = effect;
+		this.resource = resource;
 	}
 
 	public Statement() {
 	}
 
 	public String getAction() {
-		return Action;
+		return action;
 	}
 
 	public void setAction(String action) {
-		Action = action;
+		this.action = action;
 	}
 
 	public String getEffect() {
-		return Effect;
+		return effect;
 	}
 
 	public void setEffect(String effect) {
-		Effect = effect;
+		this.effect = effect;
 	}
 
 	public String getResource() {
-		return Resource;
+		return resource;
 	}
 
 	public void setResource(String resource) {
-		Resource = resource;
+		this.resource = resource;
 	}
 }

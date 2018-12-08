@@ -4,34 +4,37 @@ This is a sample template for sam-app - Below is a brief explanation of what we 
 
 ```bash
 .
-├── README.md                   <-- This instructions file
-├── hello_world                 <-- Source code for a lambda function
-│   ├── app.js                  <-- Lambda function code
-│   ├── package.json            <-- NodeJS dependencies
-│   └── tests                   <-- Unit tests
-│       └── unit
-│           └── test_handler.js
-└── template.yaml               <-- SAM template
+├── README.md                               <-- This instructions file
+├── pom.xml                                 <-- Java dependencies
+├── src
+│   ├── main
+│   │   └── java
+│   │       └── helloworld                  <-- Source code for a lambda function
+│   │           ├── App.java                <-- Lambda function code
+│   │           └── GatewayResponse.java    <-- POJO for API Gateway Responses object 
+│   └── test                                <-- Unit tests
+│       └── java
+│           └── helloworld
+│               └── AppTest.java
+└── template.yaml
 ```
 
 ## Requirements
 
 * AWS CLI already configured with Administrator permission
-* [NodeJS 8.10+ installed](https://nodejs.org/en/download/)
+* [Java SE Development Kit 8 installed](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [Docker installed](https://www.docker.com/community-edition)
+* [Maven](https://maven.apache.org/install.html)
 
 ## Setup process
 
 ### Installing dependencies
 
-In this example we use `npm` but you can use `yarn` if you prefer to manage NodeJS dependencies:
+We use `maven` to install our dependencies and package our application into a JAR file:
 
 ```bash
-cd hello_world
-npm install
-cd ../
+mvn package
 ```
-
 ### Local development
 
 **Invoking function locally through local API Gateway**
@@ -56,15 +59,15 @@ Events:
 
 ## Packaging and deployment
 
-AWS Lambda NodeJS runtime requires a flat folder with all dependencies including the application. SAM will use `CodeUri` property to know where to look up for both application and dependencies:
+AWS Lambda Java runtime accepts either a zip file or a standalone JAR file - We use the latter in this example. SAM will use `CodeUri` property to know where to look up for both application and dependencies:
 
 ```yaml
 ...
-    FirstFunction:
+    HelloWorldFunction:
         Type: AWS::Serverless::Function
         Properties:
-            CodeUri: hello_world/
-            ...
+            CodeUri: target/HelloWorld-1.0.jar
+            Handler: helloworld.App::handleRequest
 ```
 
 Firstly, we need a `S3 bucket` where we can upload our Lambda functions packaged as ZIP before we deploy anything - If you don't have a S3 bucket to store code artifacts then this is a good time to create one:
@@ -80,8 +83,6 @@ sam package \
     --template-file template.yaml \
     --output-template-file packaged.yaml \
     --s3-bucket REPLACE_THIS_WITH_YOUR_S3_BUCKET_NAME
-
-sam package --template-file template.yaml  --output-template-file packaged.yaml --s3-bucket shalabi-sam
 ```
 
 Next, the following command will create a Cloudformation Stack and deploy your SAM resources.
@@ -91,8 +92,6 @@ sam deploy \
     --template-file packaged.yaml \
     --stack-name sam-app \
     --capabilities CAPABILITY_IAM
-    
-sam deploy --template-file packaged.yaml --stack-name sam-app --capabilities CAPABILITY_IAM
 ```
 
 > **See [Serverless Application Model (SAM) HOWTO Guide](https://github.com/awslabs/serverless-application-model/blob/master/HOWTO.md) for more details in how to get started.**
@@ -103,15 +102,14 @@ After deployment is complete you can run the following command to retrieve the A
 aws cloudformation describe-stacks \
     --stack-name sam-app \
     --query 'Stacks[].Outputs'
-``` 
+```
 
 ## Testing
 
-We use `mocha` for testing our code and it is already added in `package.json` under `scripts`, so that we can simply run the following command to run our tests:
+We use `JUnit` for testing our code and you can simply run the following command to run our tests:
 
 ```bash
-cd hello_world
-npm run test
+mvn test
 ```
 
 # Appendix
@@ -135,8 +133,6 @@ sam deploy \
 aws cloudformation describe-stacks \
     --stack-name sam-app --query 'Stacks[].Outputs'
 ```
-
-**NOTE**: Alternatively this could be part of package.json scripts section.
 
 ## Bringing to the next level
 

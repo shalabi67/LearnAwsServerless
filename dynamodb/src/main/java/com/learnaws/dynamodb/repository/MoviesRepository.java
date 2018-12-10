@@ -13,4 +13,14 @@ public class MoviesRepository {
         mapper.save(movie);
         return movie;
     }
+
+    public Movie find(Integer year, String title) {
+        DynamoDBMapper mapper = new DynamoDBMapper(dynamoDb);
+        return mapper.load(Movie.class, year, title);
+    }
+
+    public void delete(Movie movie) {
+        DynamoDBMapper mapper = new DynamoDBMapper(dynamoDb);
+        mapper.delete(movie);
+    }
 }

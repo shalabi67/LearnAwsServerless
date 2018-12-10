@@ -8,12 +8,6 @@ Globals:
   Function:
     Timeout: 20
 Outputs:
-  HelloWorldFunctionIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value:
-      Fn::GetAtt:
-      - MessageFunctionRole
-      - Arn
   MessageApi:
     Description: API Gateway endpoint URL for Prod stage for Message function
     Value:
@@ -24,15 +18,16 @@ Outputs:
       Fn::GetAtt:
       - MessageFunction
       - Arn
+  MessageFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - MessageFunctionRole
+      - Arn
 Resources:
-  MessageApi:
-    Properties:
-      DefinitionUri: s3://shalabi-sam/23dd482a34f079254145a84e33473ef8
-      StageName: Prod
-    Type: AWS::Serverless::Api
   MessageFunction:
     Properties:
-      CodeUri: s3://shalabi-sam/0b5d55bb86209841de4f467199395b4a
+      CodeUri: s3://shalabi-sam/2072f0b3d4f3c866fe71bb16863b72d7
       Environment:
         Variables:
           MESSAGE: This is my message
@@ -42,6 +37,7 @@ Resources:
             Method: get
             Path: /message
           Type: Api
+      FunctionName: shalabi-message-environment
       Handler: com.sam.environment.MessageController::handleRequest
       Runtime: java8
     Type: AWS::Serverless::Function

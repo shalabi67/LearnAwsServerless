@@ -14,8 +14,10 @@ Globals:
 
 Resources:
     MessageFunction:
+        #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html
         Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
         Properties:
+            FunctionName: shalabi-message-environment
             CodeUri: target/environment-1.0.jar
             Handler: com.sam.environment.MessageController::handleRequest
             Runtime: java8
@@ -29,11 +31,11 @@ Resources:
                         Path: /message
                         Method: get
 
-    MessageApi:
-        Type: AWS::Serverless::Api
-        Properties:
-            StageName: Prod
-            DefinitionUri: swagger.json
+#    MessageApi:
+#        Type: AWS::Serverless::Api
+#        Properties:
+#            StageName: Prod
+#            DefinitionUri: swagger.json
 
 
 Outputs:
@@ -45,6 +47,6 @@ Outputs:
       Description: "Message Lambda Function ARN"
       Value: !GetAtt MessageFunction.Arn
 
-    HelloWorldFunctionIamRole:
+    MessageFunctionIamRole:
       Description: "Implicit IAM Role created for Hello World function"
       Value: !GetAtt MessageFunctionRole.Arn

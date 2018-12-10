@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: create movies table
+
+Resources:
+  MoviesTable:
+      Type: AWS::Serverless::SimpleTable
+      Properties:
+        TableName: learn-movies1
+        PrimaryKey:
+          Name: year
+          Type: Number
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        Tags:
+          Team: Backend
+          Project: Learn dynamodb
+          AppType: Serverless
+

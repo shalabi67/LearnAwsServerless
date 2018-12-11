@@ -3,6 +3,7 @@ package com.learnaws.dynamodb.repository;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.learnaws.dynamodb.model.Movie;
 
 public class MoviesRepository {
@@ -22,5 +23,11 @@ public class MoviesRepository {
     public void delete(Movie movie) {
         DynamoDBMapper mapper = new DynamoDBMapper(dynamoDb);
         mapper.delete(movie);
+    }
+
+    public Movie conditionalSave(Movie movie, DynamoDBSaveExpression saveExpression) {
+        DynamoDBMapper mapper = new DynamoDBMapper(dynamoDb);
+        mapper.save(movie, saveExpression);
+        return movie;
     }
 }

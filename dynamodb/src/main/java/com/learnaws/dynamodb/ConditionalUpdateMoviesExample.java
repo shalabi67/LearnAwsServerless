@@ -34,7 +34,7 @@ public class ConditionalUpdateMoviesExample {
         saveExpression.setExpected(expectedAttributes);
         //saveExpression.setConditionalOperator(ConditionalOperator.AND);
 
-        movie.getMovieInformation().setRank(2);
+        movie.getMovieInformation().setRank(1);
         moviesRepository.conditionalSave(movie, saveExpression);
     }
 }

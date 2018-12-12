@@ -1,5 +1,5 @@
 {
-    "ProductCatalog": [
+    "learn-product-catalog": [
         {
             "PutRequest": {
                 "Item": {

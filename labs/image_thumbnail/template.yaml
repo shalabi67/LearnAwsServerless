@@ -9,6 +9,11 @@ Globals:
         Timeout: 20
 
 
+Mappings:
+  Names:
+    S3BucketName:
+      Input: lab-thumbnail-images
+      Output: lab-thumbnail-images-resized
 
 Resources:
 #    ImageResizePolicy:
@@ -43,7 +48,7 @@ Resources:
                   BucketName: !Ref OutputBucket
               - S3CrudPolicy:
                   #we can not reference this because it will cause cyclic dependency
-                  BucketName: lab-thumbnail-images
+                  BucketName: !FindInMap [Names, S3BucketName, Input]
 
             Events:
                 ImageResize:
@@ -57,12 +62,12 @@ Resources:
     InputBucket:
       Type: 'AWS::S3::Bucket'
       Properties:
-        BucketName: lab-thumbnail-images
+        BucketName: !FindInMap [Names, S3BucketName, Input]
 
     OutputBucket:
         Type: 'AWS::S3::Bucket'
         Properties:
-          BucketName: lab-thumbnail-images-resized
+          BucketName: !FindInMap [Names, S3BucketName, Output]
 
 
 Outputs:

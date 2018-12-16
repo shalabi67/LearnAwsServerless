@@ -1,9 +1,14 @@
 package com.labs.faq.models;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
+@DynamoDBTable(tableName = "labs-faq")
 public class Question {
     private String question;
     private String answer;
 
+    @DynamoDBHashKey(attributeName = "question")
     public String getQuestion() {
         return question;
     }
@@ -18,5 +23,13 @@ public class Question {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "question='" + question + '\'' +
+                ", answer='" + answer + '\'' +
+                '}';
     }
 }

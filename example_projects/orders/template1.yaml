@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    sam-app
+
+    Sample SAM Template for sam-app that uses lambad, apigateway, and dynamodb
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 20
+        #Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        #  Variables:
+        #    TABLE_NAME:
+        #    ENDPOINT_OVERRIDE:
+
+Resources:
+  GetOrderFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: target/orders-1.0-SNAPSHOT.jar
+      Handler: com.sam.orders.lambda.OrdersGetting::handleRequest
+      Runtime: java8
+      Role: !GetAtt OrdersRole.Arn
+      Events:
+        GetOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /orders/{order_id}
+            Method: get
+
+  OrdersTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: orders
+      PrimaryKey:
+         Name: orderId
+         Type: String
+      ProvisionedThroughput:
+         ReadCapacityUnits: 5
+         WriteCapacityUnits: 5
+
+  OrdersRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: OrdersRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+
+  OrdersPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: OrdersPolicy
+      Roles:
+        - Ref: "OrdersRole"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - dynamodb:DeleteItem
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:Scan
+              - dynamodb:UpdateItem
+            Resource: !GetAtt OrdersTable.Arn
+

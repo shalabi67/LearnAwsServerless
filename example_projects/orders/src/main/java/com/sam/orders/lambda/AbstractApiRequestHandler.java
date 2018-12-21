@@ -3,6 +3,7 @@ package com.sam.orders.lambda;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,6 +61,8 @@ public abstract class AbstractApiRequestHandler<BodyType> implements RequestStre
 		queryStringMap = getQueryStringMap(event);
 		headersMap = getHeadersMap(event);
 		*/
+		getHeadersMap(event, logger);
+
 		body = getBody(event, logger);
 
 		try {
@@ -102,7 +105,7 @@ public abstract class AbstractApiRequestHandler<BodyType> implements RequestStre
 					logger.log("could not find value " + value);
 					return map;
 				}
-				map = objectMapper.readValue(pathParametersNode.asText(), map.getClass());
+				map = objectMapper.convertValue(pathParametersNode, Map.class);
 				if(map == null) {
 					logger.log("No information: map is null");
 					map = new HashMap<>();

@@ -44,6 +44,20 @@ Resources:
             Path: /orders
             Method: post
 
+  DeleteOrderFunction:
+      Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+      Properties:
+        CodeUri: target/orders-1.0-SNAPSHOT.jar
+        Handler: com.sam.orders.lambda.DeletingOrder::handleRequest
+        Runtime: java8
+        Role: !GetAtt OrdersRole.Arn
+        Events:
+          DeleteOrder:
+            Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+            Properties:
+              Path: /orders/{order_id}
+              Method: delete
+
   OrdersTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -109,3 +123,22 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: '*'
+
+
+Outputs:
+    HelloWorldApi:
+      Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+
+    GetOrdersFunction:
+      Description: "GetOrders Lambda Function ARN"
+      Value: !GetAtt GetOrdersFunction.Arn
+
+
+    DeleteOrderFunction:
+      Description: "DeleteOrder Lambda Function ARN"
+      Value: !GetAtt DeleteOrderFunction.Arn
+
+    CreateOrderFunction:
+      Description: "CreateOrder Lambda Function ARN"
+      Value: !GetAtt AddOrderFunction.Arn

@@ -9,6 +9,7 @@ Description: >
 Globals:
     Function:
         Timeout: 20
+        MemorySize: 150
         #Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         #  Variables:
         #    TABLE_NAME:
@@ -28,6 +29,20 @@ Resources:
           Properties:
             Path: /orders
             Method: get
+
+  AddOrderFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: target/orders-1.0-SNAPSHOT.jar
+      Handler: com.sam.orders.lambda.AddingOrder::handleRequest
+      Runtime: java8
+      Role: !GetAtt OrdersRole.Arn
+      Events:
+        AddOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /orders
+            Method: post
 
   OrdersTable:
     Type: AWS::Serverless::SimpleTable

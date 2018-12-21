@@ -14,5 +14,18 @@ sam deploy \
     
     
 ###Run locally
+####dynamodb
+dock#er run -d -p 8000:8000 amazon/dynamodb-local
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+
+####sam
 sam local start-api -d 5858 
 http://127.0.0.1:3000/orders 
+
+##Data
+###OrderRequest
+{
+    "customerId":"123",
+    "preTaxAmount":200,
+    "postTaxAmount": 210
+}

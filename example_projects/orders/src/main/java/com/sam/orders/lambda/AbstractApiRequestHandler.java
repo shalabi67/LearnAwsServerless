@@ -24,7 +24,7 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
  * @param <BodyType> body input object ( used in post, and PUT method calls).
  */
 public abstract class AbstractApiRequestHandler<BodyType> implements RequestStreamHandler {
-	private static Map<String, String> JSON_CONTENT = Collections.singletonMap("Content-Type",
+	protected static Map<String, String> JSON_CONTENT = Collections.singletonMap("Content-Type",
 			"application/json");
 
 	ObjectMapper objectMapper = new ObjectMapper();
@@ -60,12 +60,12 @@ public abstract class AbstractApiRequestHandler<BodyType> implements RequestStre
 		queryStringMap = getQueryStringMap(event);
 		headersMap = getHeadersMap(event);
 		*/
-		body = getBody(event);
+		body = getBody(event, logger);
 
 		try {
 			execute(event, outputStream, context);
 		}catch(Exception e) {
-			logger.log("execute method throws an exception.");
+			logger.log("execute method throws an exception." + e.toString());
 			writeErrorResponse(objectMapper, outputStream, e.getMessage());
 		}
 	}
@@ -83,48 +83,65 @@ public abstract class AbstractApiRequestHandler<BodyType> implements RequestStre
 	protected abstract void execute(JsonNode event, OutputStream outputStream, Context context);
 
 
-	protected Map<String, String> getHeadersMap(JsonNode event) {
-		return getMap(event, "headers");
+	protected Map<String, String> getHeadersMap(JsonNode event, LambdaLogger logger) {
+		return getMap(event, "headers", logger);
 	}
-	protected Map<String, String> getQueryStringMap(JsonNode event) {
-		return getMap(event, "queryStringParameters");
+	protected Map<String, String> getQueryStringMap(JsonNode event, LambdaLogger logger) {
+		return getMap(event, "queryStringParameters", logger);
 	}
-	protected Map<String, String> getPathParameters(JsonNode event) {
-		return getMap(event, "pathParameters");
+	protected Map<String, String> getPathParameters(JsonNode event, LambdaLogger logger) {
+		return getMap(event, "pathParameters", logger);
 	}
-	private Map<String, String> getMap(JsonNode event, String value) {
-		JsonNode pathParametersNode = event.findValue(value);
+	private Map<String, String> getMap(JsonNode event, String value, LambdaLogger logger) {
 		Map<String, String> map = new HashMap<>();
-		try {
-			map = objectMapper.readValue(pathParametersNode.asText(), map.getClass());
-		} catch (IOException e) {
-
+		if(event != null) {
+			try {
+				logger.log("getting map of " + value);
+				JsonNode pathParametersNode = event.findValue(value);
+				if(value == null) {
+					logger.log("could not find value " + value);
+					return map;
+				}
+				map = objectMapper.readValue(pathParametersNode.asText(), map.getClass());
+				if(map == null) {
+					logger.log("No information: map is null");
+					map = new HashMap<>();
+				}
+			} catch (Exception e) {
+				logger.log("Exception while getting map for " + value + " the exception is " + e.getMessage());
+			}
 		}
 
 		return map;
 	}
-	private BodyType getBody(JsonNode event) {
-		JsonNode updateOrderRequestBody = event.findValue("body");
-		if (updateOrderRequestBody == null) {
-			return null;
-		}
-
+	private BodyType getBody(JsonNode event,  LambdaLogger logger) {
 		final BodyType bodyObject;
 		try {
+			logger.log("get body");
+			JsonNode updateOrderRequestBody = event.findValue("body");
+			if (updateOrderRequestBody == null) {
+				return null;
+			}
+
 			bodyObject = objectMapper.readValue(
 					updateOrderRequestBody.asText(), getBodyClass());
 		} catch (Exception e) {
+			logger.log("Exception while getting body. The exception is " + e.getMessage());
 			return null;
 		}
 
 		return bodyObject;
 	}
-	private void writeErrorResponse(ObjectMapper objectMapper,
+	protected void writeErrorResponse(ObjectMapper objectMapper,
 			OutputStream outputStream,
-			String details) throws IOException {
-		objectMapper.writeValue(outputStream, new GatewayResponse<>(
-				objectMapper.writeValueAsString(new ErrorMessage(details, SC_BAD_REQUEST)),
-				JSON_CONTENT, SC_BAD_REQUEST));
+			String details){
+		try {
+			objectMapper.writeValue(outputStream,
+					new GatewayResponse<>(objectMapper.writeValueAsString(new ErrorMessage(details, SC_BAD_REQUEST)),
+							JSON_CONTENT, SC_BAD_REQUEST));
+		}catch(IOException e) {
+
+		}
 	}
 
 	private Class<BodyType> getBodyClass() {

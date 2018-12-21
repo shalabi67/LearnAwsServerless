@@ -15,7 +15,7 @@ Globals:
         #    ENDPOINT_OVERRIDE:
 
 Resources:
-  GetOrderFunction:
+  GetOrdersFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: target/orders-1.0-SNAPSHOT.jar
@@ -23,10 +23,10 @@ Resources:
       Runtime: java8
       Role: !GetAtt OrdersRole.Arn
       Events:
-        GetOrder:
+        GetOrders:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /orders/{order_id}
+            Path: /orders
             Method: get
 
   OrdersTable:
@@ -44,6 +44,9 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName: OrdersRole
+      ManagedPolicyArns:
+        #- arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchFullAccess
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -75,3 +78,19 @@ Resources:
               - dynamodb:UpdateItem
             Resource: !GetAtt OrdersTable.Arn
 
+  OrdersCloudWatchPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: OrdersPolicy
+      Roles:
+        - Ref: "OrdersRole"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: '*'

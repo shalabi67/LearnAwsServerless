@@ -11,3 +11,8 @@ sam deploy \
     --template-file packaged.yaml \
     --stack-name sam-orders \
     --capabilities CAPABILITY_NAMED_IAM
+    
+    
+###Run locally
+sam local start-api -d 5858 
+http://127.0.0.1:3000/orders 

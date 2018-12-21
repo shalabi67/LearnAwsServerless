@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'message
+
+  Sample SAM Template for message using environment variables MESSAGE
+
+  '
+Globals:
+  Function:
+    Timeout: 20
+Outputs:
+  MessageApi:
+    Description: API Gateway endpoint URL for Prod stage for Message function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/message/
+  MessageFunction:
+    Description: Message Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - MessageFunction
+      - Arn
+  MessageFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - MessageFunctionRole
+      - Arn
+Resources:
+  MessageFunction:
+    Properties:
+      CodeUri: s3://shalabi-sam/2072f0b3d4f3c866fe71bb16863b72d7
+      Environment:
+        Variables:
+          MESSAGE: This is my message
+      Events:
+        Message:
+          Properties:
+            Method: get
+            Path: /message
+          Type: Api
+      FunctionName: shalabi-message-environment
+      Handler: com.sam.environment.MessageController::handleRequest
+      Runtime: java8
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31

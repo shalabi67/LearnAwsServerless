@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    message
+
+    Sample SAM Template for message using environment variables MESSAGE
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 20
+
+
+
+Resources:
+    MessageFunction:
+        #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            FunctionName: shalabi-message-environment
+            CodeUri: target/environment-1.0.jar
+            Handler: com.sam.environment.MessageController::handleRequest
+            Runtime: java8
+            Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+                Variables:
+                    MESSAGE: This is my message
+            Events:
+                Message:
+                    Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                    Properties:
+                        Path: /message
+                        Method: get
+
+#    MessageApi:
+#        Type: AWS::Serverless::Api
+#        Properties:
+#            StageName: Prod
+#            DefinitionUri: swagger.json
+
+
+Outputs:
+    MessageApi:
+      Description: "API Gateway endpoint URL for Prod stage for Message function"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/message/"
+
+    MessageFunction:
+      Description: "Message Lambda Function ARN"
+      Value: !GetAtt MessageFunction.Arn
+
+    MessageFunctionIamRole:
+      Description: "Implicit IAM Role created for Hello World function"
+      Value: !GetAtt MessageFunctionRole.Arn

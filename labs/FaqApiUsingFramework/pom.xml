@@ -10,6 +10,52 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>FaqApiUsingFramework</artifactId>
+    <properties>
+        <framework.env>live</framework.env>
+    </properties>
 
+    <profiles>
+        <profile>
+            <id>live</id>
+            <activation>
+                <property>
+                    <name>framework.env</name>
+                    <value>live</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.serverless</groupId>
+                    <artifactId>aws-framework</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.serverless</groupId>
+            <artifactId>framework-interfaces</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

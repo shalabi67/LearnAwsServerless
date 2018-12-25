@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    sam-faq-framework
+
+    Sample SAM Template for sam-faq using our framework.
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 20
+        MemorySize: 150
+        #Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        #  Variables:
+        #    TABLE_NAME:
+        #    ENDPOINT_OVERRIDE:
+
+Resources:
+  GetFaqsFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: sam-get-faq-framework
+      CodeUri: target/FaqApiUsingFramework-1.0-SNAPSHOT.jar
+      Handler: com.labs.FaqApiUsingFramework.lambda.FaqLambda::handleRequest
+      Runtime: java8
+      Policies:
+        # Give just CRUD permissions to one table
+        - DynamoDBCrudPolicy:
+            TableName: !Ref FAQTable
+      Events:
+        GetFaqss:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /faq
+            Method: get
+
+  AddFaqFunction:
+     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+     Properties:
+       FunctionName: sam-add-faq-framework
+       CodeUri: target/FaqApiUsingFramework-1.0-SNAPSHOT.jar
+       Handler: com.labs.FaqApiUsingFramework.lambda.AddingFaqLambda::handleRequest
+       Runtime: java8
+       Policies:
+         # Give just CRUD permissions to one table
+         - DynamoDBCrudPolicy:
+             TableName: !Ref FAQTable
+       Events:
+         AddFaqs:
+           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+           Properties:
+             Path: /faq
+             Method: post
+
+
+  FAQTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      #notivce table name is the same as the one used in models.Questions class
+      TableName: questions
+      PrimaryKey:
+         Name: id
+         Type: String
+      ProvisionedThroughput:
+         ReadCapacityUnits: 5
+         WriteCapacityUnits: 5
+
+Outputs:
+    FaqApi:
+      Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/faq/"
+
+    GetFaqsFunction:
+      Description: "GetFaqs Lambda Function ARN"
+      Value: !GetAtt GetFaqsFunction.Arn

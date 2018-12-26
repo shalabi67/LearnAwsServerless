@@ -30,6 +30,21 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>local</id>
+            <activation>
+                <property>
+                    <name>framework.env</name>
+                    <value>local</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.serverless</groupId>
+                    <artifactId>aws-local-framework</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
     <dependencies>

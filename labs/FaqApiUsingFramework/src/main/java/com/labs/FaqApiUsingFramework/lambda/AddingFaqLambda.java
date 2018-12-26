@@ -12,6 +12,7 @@ import com.serverless.framework.models.GatewayResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_METHOD_FAILURE;
 import static org.apache.http.HttpStatus.SC_OK;
 
@@ -27,9 +28,9 @@ public class AddingFaqLambda extends AbstractApiRequestHandler<Question> {
             Question question = questionRepository.save(body);
 
             objectMapper.writeValue(outputStream, new GatewayResponse<>(
-                    objectMapper.writeValueAsString(question),
+                   objectMapper.writeValueAsString(question),
                     JSON_CONTENT,
-                    SC_OK));
+                    SC_CREATED));
         } catch (Exception e) {
             try {
                 objectMapper.writeValue(outputStream, new GatewayResponse<>(

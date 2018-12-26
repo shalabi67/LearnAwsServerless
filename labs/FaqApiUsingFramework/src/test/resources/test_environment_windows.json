@@ -1,0 +1,26 @@
+{
+    "GetOrderFunction": {
+        "LOCAL_DYNAMODB_URL": "http://docker.for.windows.localhost:8000",
+        "TABLE_NAME": "orders_table"
+    },
+    "GetOrdersFunction": {
+        "LOCAL_DYNAMODB_URL": "http://docker.for.windows.localhost:8000",
+        "TABLE_NAME": "orders_table"
+    },
+    "UpdateOrderFunction": {
+        "LOCAL_DYNAMODB_URL": "http://docker.for.windows.localhost:8000",
+        "TABLE_NAME": "orders_table"
+    },
+    "DeleteOrderFunction": {
+        "LOCAL_DYNAMODB_URL": "http://docker.for.windows.localhost:8000",
+        "TABLE_NAME": "orders_table"
+    },
+    "CreateOrderFunction": {
+        "LOCAL_DYNAMODB_URL": "http://docker.for.windows.localhost:8000",
+        "TABLE_NAME": "orders_table"
+    },
+    "CreateOrdersTableFunction": {
+        "LOCAL_DYNAMODB_URL": "http://docker.for.windows.localhost:8000",
+        "TABLE_NAME": "orders_table"
+    }
+}

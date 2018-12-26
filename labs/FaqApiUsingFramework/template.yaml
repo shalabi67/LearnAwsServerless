@@ -23,7 +23,7 @@ Resources:
   GetFaqsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      FunctionName: sam-get-faq-framework
+      FunctionName: sam-get-faqs-framework
       CodeUri: target/FaqApiUsingFramework-1.0-SNAPSHOT.jar
       Handler: com.labs.FaqApiUsingFramework.lambda.FaqLambda::handleRequest
       Runtime: java8
@@ -36,6 +36,24 @@ Resources:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /faq
+            Method: get
+
+  GetFaqFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: sam-get-faq-framework
+      CodeUri: target/FaqApiUsingFramework-1.0-SNAPSHOT.jar
+      Handler: com.labs.FaqApiUsingFramework.lambda.GettingFaqLambda::handleRequest
+      Runtime: java8
+      Policies:
+        # Give just CRUD permissions to one table
+        - DynamoDBCrudPolicy:
+            TableName: !Ref FAQTable
+      Events:
+        GetFaqss:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /faq/{questionId}
             Method: get
 
   AddFaqFunction:

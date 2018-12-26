@@ -1,14 +1,15 @@
 package com.serverless.framework.dynamodb.repository;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
-import java.util.UUID;
 
 public abstract class BaseModule<T> {
 	protected static final String ID = "id";
 
 	protected T id;
+    @JsonIgnore
 	protected String tableName;
 
 	protected BaseModule() {

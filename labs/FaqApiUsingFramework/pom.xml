@@ -10,9 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>FaqApiUsingFramework</artifactId>
-    <properties>
-        <framework.env>live</framework.env>
-    </properties>
 
     <profiles>
         <profile>
@@ -33,6 +30,7 @@
         <profile>
             <id>local</id>
             <activation>
+                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>framework.env</name>
                     <value>local</value>

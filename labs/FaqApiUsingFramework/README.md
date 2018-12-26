@@ -29,3 +29,9 @@ Start the SAM local API.
  - On Windows7: `sam local start-api --env-vars src/test/resources/test_environment_windows7.json`
  - On Linux: `sam local start-api --env-vars src/test/resources/test_environment_linux.json`
  
+
+
+##profiles
+check which profile is active
+mvn help:active-profiles 
+mvn help:active-profiles -Dframework.env=live

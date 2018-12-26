@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    sam-music
+
+    SAM Template for sam-music using our framework.
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 120
+        MemorySize: 150
+        Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+          Variables:
+        #    TABLE_NAME:
+        # for mac
+            #LOCAL_DYNAMODB_URL: http://docker.for.windows.localhost:8000
+        # for windows 7  the address 172.17.0.2 is from container inspect command, which is the address of the container
+        # you cal also use 192.168.99.100 which is the docker machine address in this case you need to enable a host only adapter on virtual machine.
+            LOCAL_DYNAMODB_URL: http://192.168.99.100:8000
+
+Resources:
+  MusicTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      #notivce table name is the same as the one used in models.Questions class
+      TableName: sam-musics
+      AttributeDefinitions:
+        -
+          AttributeName: artist
+          AttributeType: S
+        -
+          AttributeName: song
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: artist
+          KeyType: HASH
+        -
+          AttributeName: song
+          KeyType: RANGE
+      ProvisionedThroughput:
+         ReadCapacityUnits: 5
+         WriteCapacityUnits: 5
+

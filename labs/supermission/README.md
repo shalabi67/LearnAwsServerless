@@ -5,7 +5,7 @@ This project represents "Serverless Web Apps using Amazon DynamoDB" quest. https
 This lab teaches you about Amazon DynamoDB and walks you through how to create, query, view and delete a table in the AWS Management Console. 
 For a demonstration, go to: https://www.youtube.com/watch?v=ujWV3-m1pLo 
 
-##Build
+##Live Build
 ###Build
 mvn package -Plive
 
@@ -16,3 +16,26 @@ sam package --output-template-file packaged.yaml --s3-bucket shalabi-sam
 sam deploy --template-file packaged.yaml --stack-name sam-super-mission --capabilities CAPABILITY_NAMED_IAM
 
 
+##Local
+###Dynamodb
+####Start DynamoDB Local in a Docker container. 
+docker run -d -p 8000:8000 amazon/dynamodb-local
+
+####create questions table
+aws dynamodb create-table --table-name lab-super-missions  --attribute-definitions  AttributeName=superHero,AttributeType=S --key-schema AttributeName=superHero,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url http://192.168.99.100:8000
+
+###list tables
+aws dynamodb list-tables --endpoint-url http://192.168.99.100:8000
+
+###get table schema
+aws dynamodb describe-table --table-name lab-super-missions  --endpoint-url http://192.168.99.100:8000
+
+###Build
+mvn package -Plocal
+
+###starting sam
+sam local start-api
+
+
+###start sam for debug
+sam local start-api -d 5858

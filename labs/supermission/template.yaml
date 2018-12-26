@@ -7,6 +7,9 @@ Description: >
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
+    #Api:
+    #  Cors: "*"
+
     Function:
         Timeout: 120
         MemorySize: 150
@@ -33,6 +36,34 @@ Resources:
           Properties:
             Path: /missions
             Method: get
+
+  GetSuperMissionFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: target/super-mission-1.0-SNAPSHOT.jar
+      Handler: com.lab.supermission.lambda.GettingSuperMission::handleRequest
+      Runtime: java8
+      Role: !GetAtt SuperMissionScanRole.Arn
+      Events:
+        CreateOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /missions/{superHero}
+            Method: get
+
+  AddSuperMissionFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: target/super-mission-1.0-SNAPSHOT.jar
+      Handler: com.lab.supermission.lambda.AddingSuperMission::handleRequest
+      Runtime: java8
+      Role: !GetAtt SuperMissionScanRole.Arn
+      Events:
+        CreateOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /missions
+            Method: post
 
   SuperMissionTable:
       Type: AWS::Serverless::SimpleTable
@@ -126,8 +157,16 @@ Outputs:
       Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/missions/"
 
     GetSuperMissionsFunction:
-      Description: "GetFaqs Lambda Function ARN"
+      Description: "GetSuperMissionsFunction Lambda Function ARN"
       Value: !GetAtt GetSuperMissionsFunction.Arn
+
+    AddSuperMissionFunction:
+          Description: "AddSuperMissionFunction Lambda Function ARN"
+          Value: !GetAtt AddSuperMissionFunction.Arn
+
+    GetSuperMissionFunction:
+          Description: "GetSuperMissionFunction Lambda Function ARN"
+          Value: !GetAtt GetSuperMissionFunction.Arn
 
 
     SuperMissionQueryRole:

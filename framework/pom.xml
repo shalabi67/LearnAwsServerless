@@ -11,6 +11,7 @@
     <modules>
         <module>framework-interfaces</module>
         <module>aws-framework</module>
+        <module>aws-local-framework</module>
         <module>bom</module>
     </modules>
 

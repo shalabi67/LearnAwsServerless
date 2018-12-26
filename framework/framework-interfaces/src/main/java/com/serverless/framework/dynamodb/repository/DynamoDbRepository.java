@@ -3,15 +3,11 @@ package com.serverless.framework.dynamodb.repository;
 import com.serverless.framework.dynamodb.factories.IDynamoDbClientFactory;
 import com.serverless.framework.factories.BeansFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
-import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
-import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class DynamoDbRepository<Model extends  BaseModule> {
 	private static String BEAN_NAME = "DYNAMODB_CLIENT";
@@ -41,5 +37,30 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 		}
 
 		return null;
+	}
+
+	public List<Model> findAll(Model model) {
+		ScanResponse result;
+
+		ScanRequest.Builder scanBuilder = ScanRequest.builder()
+				.tableName(model.getTableName());
+
+		result = dynamoDbClient.scan(scanBuilder.build());
+		List<Model> list = result.items().stream()
+				.map((Map<String, AttributeValue> map) ->{
+					Model newModel;
+					try {
+						newModel = (Model)model.getClass().newInstance();
+					} catch (InstantiationException e) {
+						return null;
+					} catch (IllegalAccessException e) {
+						return null;
+					}
+					newModel.read(map);
+					return newModel;
+				})
+				.collect(Collectors.toList());
+
+		return list;
 	}
 }

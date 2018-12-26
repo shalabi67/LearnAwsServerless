@@ -14,7 +14,7 @@ public abstract class BaseModule<T> {
 	protected BaseModule() {
 		id = createId();
 	}
-	public abstract void read();
+	public abstract void read(Map<String, AttributeValue> stringAttributeValueMap);
 	public abstract Map<String, AttributeValue> save();
 	protected abstract T createId();
 

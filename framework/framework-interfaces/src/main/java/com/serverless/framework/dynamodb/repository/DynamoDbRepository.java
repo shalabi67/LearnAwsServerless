@@ -62,7 +62,7 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 
 	public Model find(String id, Model model) {
 		DynamodbAttributes keyAttributes = new DynamodbAttributes();
-		keyAttributes.putString(ID, id);
+		keyAttributes.putString(model.getKeyName(), id);
 
 		GetItemRequest itemRequest = GetItemRequest
 				.builder()

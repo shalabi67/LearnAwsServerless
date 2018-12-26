@@ -26,4 +26,9 @@ public abstract class BaseModule<T> {
 	public String getTableName() {
 		return tableName;
 	}
+
+	@JsonIgnore
+	public String getKeyName() {
+		return ID;
+	}
 }

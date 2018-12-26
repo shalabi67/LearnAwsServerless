@@ -24,7 +24,7 @@ public class Question extends BaseModule<String> {
     }
 
     @Override
-    public void read() {
+    public void read(Map<String, AttributeValue> stringAttributeValueMap) {
 
     }
 

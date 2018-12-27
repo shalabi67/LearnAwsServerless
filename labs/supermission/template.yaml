@@ -7,8 +7,15 @@ Description: >
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
+    Api:
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
     #Api:
-    #  Cors: "*"
+    #  Cors:
+    #    AllowMethods: "'POST, GET, OPTIONS'"
+    #    AllowOrigin: "'*'"
+    #   AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
 
     Function:
         Timeout: 120

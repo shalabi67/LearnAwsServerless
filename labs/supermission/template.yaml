@@ -37,6 +37,9 @@ Resources:
       Handler: com.lab.supermission.lambda.GettingSuperMissions::handleRequest
       Runtime: java8
       Role: !GetAtt SuperMissionScanRole.Arn
+      #Policies:
+      #https://github.com/awslabs/serverless-application-model/blob/develop/examples/2016-10-31/policy_templates/all_policy_templates.yaml
+      #- CloudWatchPutMetricPolicy
       Events:
         CreateOrder:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -88,6 +91,8 @@ Resources:
       Type: AWS::IAM::Role
       Properties:
         RoleName: SuperMissionScanRole
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -102,6 +107,7 @@ Resources:
 
   SuperMissionScanPolicy:
       Type: AWS::IAM::Policy
+      #DependsOn: [SuperMissionScanRole]
       Properties:
         PolicyName: SuperMissionScanPolicy
         Roles:
@@ -123,6 +129,8 @@ Resources:
       Type: AWS::IAM::Role
       Properties:
         RoleName: SuperMissionQueryRole
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -137,6 +145,7 @@ Resources:
 
   SuperMissionQueryPolicy:
       Type: AWS::IAM::Policy
+      #DependsOn: [SuperMissionQueryRole]
       Properties:
         PolicyName: SuperMissionQueryPolicy
         Roles:
@@ -158,9 +167,38 @@ Resources:
               Resource: "*"
               Effect: Allow
 
+  CloudWatchPolicy:
+        Type: AWS::IAM::Policy
+        DependsOn: [SuperMissionScanRole]
+        Properties:
+          PolicyName: CloudWatchPolicy
+          Roles:
+            - Ref: "SuperMissionScanRole"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+                # !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+                #!Sub "arn:aws:logs:${AWS::Region}:${GetSuperMissionsFunction}:*"
+                Effect: Allow
+              #-
+              #  Effect: Allow
+              #  Action:
+              #    - logs:CreateLogStream
+              #    - logs:PutLogEvents
+              #  Resource:
+              #    - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*:*"
+                  #!Sub "arn:aws:logs:${AWS::Region}:${GetSuperMissionsFunction}:log-group:/aws/lambda/*:*"
+
 Outputs:
     FaqApi:
       Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+      #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html
       Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/missions/"
 
     GetSuperMissionsFunction:

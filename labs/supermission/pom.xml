@@ -15,10 +15,7 @@
         <profile>
             <id>live</id>
             <activation>
-                <property>
-                    <name>framework.env</name>
-                    <value>live</value>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <dependencies>
                 <dependency>
@@ -29,13 +26,6 @@
         </profile>
         <profile>
             <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>framework.env</name>
-                    <value>local</value>
-                </property>
-            </activation>
             <dependencies>
                 <dependency>
                     <groupId>com.serverless</groupId>

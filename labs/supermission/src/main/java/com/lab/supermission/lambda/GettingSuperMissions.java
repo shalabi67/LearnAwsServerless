@@ -28,14 +28,14 @@ public class GettingSuperMissions extends AbstractApiRequestHandler<SuperMission
 
             objectMapper.writeValue(outputStream, new GatewayResponse<>(
                     objectMapper.writeValueAsString(superMissions),
-                    JSON_CONTENT,
+                    defaultHeader,
                     SC_OK));
         } catch (Exception e) {
             logger.log(e.getMessage());
             try {
                 objectMapper.writeValue(outputStream, new GatewayResponse<>(
                         "Exception: " + e.getMessage(),
-                        JSON_CONTENT,
+                        defaultHeader,
                         SC_METHOD_FAILURE));
             } catch (Exception e1) {
 

@@ -20,6 +20,7 @@
         <module>image_thumbnail</module>
         <module>FaqApi</module>
         <module>FaqApiUsingFramework</module>
+        <module>supermission</module>
     </modules>
 
     <dependencyManagement>

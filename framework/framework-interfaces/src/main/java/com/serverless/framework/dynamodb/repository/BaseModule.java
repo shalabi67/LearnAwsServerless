@@ -5,7 +5,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
 
-public abstract class BaseModule<T> {
+public abstract class BaseModule<T> implements BasicModel {
 	protected static final String ID = "id";
 
 	protected T id;
@@ -15,8 +15,6 @@ public abstract class BaseModule<T> {
 	protected BaseModule() {
 		id = createId();
 	}
-	public abstract void read(Map<String, AttributeValue> stringAttributeValueMap);
-	public abstract Map<String, AttributeValue> save();
 	protected abstract T createId();
 
 	public T getId() {

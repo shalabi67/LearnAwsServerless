@@ -31,7 +31,7 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 				dynamoDbClient.putItem(PutItemRequest.builder()
 						.tableName(model.getTableName())
 						.item(item)
-						.conditionExpression("attribute_not_exists(orderId)")
+						//.conditionExpression("attribute_not_exists(orderId)")
 						.build());
 				return model;
 			} catch (ConditionalCheckFailedException e) {
@@ -64,6 +64,10 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 		DynamodbAttributes keyAttributes = new DynamodbAttributes();
 		keyAttributes.putString(model.getKeyName(), id);
 
+		return find(keyAttributes, model);
+	}
+
+	public Model find(DynamodbAttributes keyAttributes, Model model) {
 		GetItemRequest itemRequest = GetItemRequest
 				.builder()
 				.tableName(model.getTableName())

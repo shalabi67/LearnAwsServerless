@@ -1,0 +1,111 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    Frequently Asked questions FAQ
+    This project provides a set of APIs to be able to send and view questions
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 20
+
+
+Mappings:
+  Names:
+    S3BucketName:
+      Input: lab-thumbnail-images
+      Output: lab-thumbnail-images-resized
+
+Resources:
+      AddQuestionFunction:
+        #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            FunctionName: lab-add-question
+            CodeUri: target/FaqApi-1.0-SNAPSHOT-shaded.jar
+            Handler: com.labs.faq.lambda.FaqLambdaAdd::handleRequest
+            Runtime: java8
+
+            #https://github.com/awslabs/serverless-application-model/blob/master/docs/policy_templates.rst
+            Policies:
+              # Give just CRUD permissions to one table
+              - DynamoDBCrudPolicy:
+                  TableName: !Ref FAQTable
+
+            Events:
+              FaqAdd:
+                  Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                  Properties:
+                      Path: /questions
+                      Method: post
+
+      FAQTable:
+        Type: AWS::Serverless::SimpleTable
+        Properties:
+          TableName: labs-faq
+          PrimaryKey:
+            Name: question
+            Type: String
+
+      FAQResource:
+          Type: AWS::ApiGateway::Resource
+          Properties:
+            ParentId:
+              Fn::GetAtt:
+                - FAQsRestApi
+                - RootResourceId
+            PathPart: questions
+            RestApiId:
+              Ref: FAQsRestApi
+
+      FAQsRestApi:
+          Type: AWS::ApiGateway::RestApi
+          Properties:
+            Description: Manague questions.
+            Body:
+              info:
+                version: '1.0'
+                title:
+                  Ref: AWS::StackName
+              #basePath: "/LATEST"
+              responses:
+                '200':
+                  description: 200 response
+              paths:
+                "/questions":
+                  post:
+                    x-amazon-apigateway-integration:
+                      httpMethod: POST
+                      #type: aws_proxy
+                      uri:
+                        Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddQuestionFunction.Arn}/invocations
+                    responses:
+                      default:
+                        statusCode: '200'
+              swagger: '2.0'
+
+      PostQuestionMethod:
+          Type: "AWS::ApiGateway::Method"
+          Properties:
+            HttpMethod: POST
+            AuthorizationType: "NONE"
+            ResourceId:
+              Ref: FAQResource
+            RestApiId:
+              Ref: FAQsRestApi
+            Integration:
+              Type: "AWS"
+              Uri:
+                Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AddQuestionFunction.Arn}/invocations
+              IntegrationHttpMethod: POST
+
+Outputs:
+    HelloWorldApi:
+      Description: "API Gateway endpoint URL for Prod stage for Add question function"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/questions/"
+
+    AddQuestionFunction:
+      Description: "Add new question Lambda Function."
+      Value: !GetAtt AddQuestionFunction.Arn
+
+
+

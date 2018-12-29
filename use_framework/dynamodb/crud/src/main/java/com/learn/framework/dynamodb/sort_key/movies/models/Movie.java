@@ -1,4 +1,4 @@
-package com.learn.framework.dynamodb.no_sort_key.movies.models;
+package com.learn.framework.dynamodb.sort_key.movies.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.serverless.framework.dynamodb.repository.BaseModule;
@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -15,7 +14,7 @@ import java.util.Map;
 public class Movie extends BaseModule<Long> {
     private static final String TABLE_NAME = "learn-movies";
     public static final String YEAR = "year";
-    private static final String TITLE = "title";
+    public static final String TITLE = "title";
     private static final String INFO = "info";
     private Long year;
     private String title;

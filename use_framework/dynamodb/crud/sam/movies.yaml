@@ -4,16 +4,32 @@ Description: create movies table
 
 Resources:
   MoviesTable:
-      Type: AWS::Serverless::SimpleTable
+      Type: AWS::DynamoDB::Table
       Properties:
         TableName: learn-movies
-        PrimaryKey:
-          Name: year
-          Type: Number
+        KeySchema:
+          -
+            AttributeName: year
+            KeyType: HASH
+          -
+            AttributeName: title
+            KeyType: RANGE
+
+        AttributeDefinitions:
+          -
+            AttributeName: year
+            AttributeType: N
+          -
+            AttributeName: title
+            AttributeType: S
+
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         Tags:
-          Team: Learn
-          Project: Learn dynamodb
-          AppType: Framework
+          - Key: Team
+            Value: Backend
+          - Key: Project
+            Value: Learn dynamodb
+          - Key: AppType
+            Value: Serverless

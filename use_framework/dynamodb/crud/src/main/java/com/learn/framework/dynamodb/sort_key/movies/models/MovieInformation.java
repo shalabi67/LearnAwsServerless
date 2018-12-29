@@ -1,4 +1,4 @@
-package com.learn.framework.dynamodb.no_sort_key.movies.models;
+package com.learn.framework.dynamodb.sort_key.movies.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.serverless.framework.dynamodb.repository.BasicModel;

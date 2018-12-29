@@ -1,6 +1,6 @@
-package com.learn.framework.dynamodb.no_sort_key.movies.repositories;
+package com.learn.framework.dynamodb.sort_key.movies.repositories;
 
-import com.learn.framework.dynamodb.no_sort_key.movies.models.Movie;
+import com.learn.framework.dynamodb.sort_key.movies.models.Movie;
 import com.serverless.framework.dynamodb.factories.IDynamoDbClientFactory;
 import com.serverless.framework.dynamodb.repository.DynamoDbRepository;
 

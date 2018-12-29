@@ -15,7 +15,7 @@ sam deploy --template-file movies_packaged.yaml --stack-name learn-movies --capa
 docker run -d -p 8000:8000 amazon/dynamodb-local
 
 ####create movies table on local
-aws dynamodb create-table --table-name learn-movies  --attribute-definitions  AttributeName=year,AttributeType=N --key-schema AttributeName=year,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url http://192.168.99.100:8000
+aws dynamodb create-table --table-name learn-movies  --attribute-definitions  AttributeName=year,AttributeType=N  AttributeName=title,AttributeType=S --key-schema AttributeName=year,KeyType=HASH AttributeName=title,KeyType=RANG --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url http://192.168.99.100:8000
 
 ##delete table
 aws dynamodb delete-table --table-name learn-movies --endpoint-url http://192.168.99.100:8000

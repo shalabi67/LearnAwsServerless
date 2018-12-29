@@ -28,9 +28,18 @@ public abstract class AbstractApiRequestHandler<BodyType> implements RequestStre
 	protected static Map<String, String> JSON_CONTENT = Collections.singletonMap("Content-Type",
 			"application/json");
 
+	protected Map<String, String> defaultHeader;
+
 	protected ObjectMapper objectMapper = new ObjectMapper();
 	protected BodyType body;
 
+	protected AbstractApiRequestHandler() {
+		defaultHeader = new HashMap<>();
+		defaultHeader.put("Content-Type", "application/json");
+		defaultHeader.put("access-control-allow-headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token");
+		defaultHeader.put("access-control-allow-methods", "POST,GET,OPTIONS,PUT");
+		defaultHeader.put("access-control-allow-origin", "*");
+	}
 	/*
 	Map<String, String> pathParametersMap;
 	Map<String, String> queryStringMap;
@@ -141,7 +150,7 @@ public abstract class AbstractApiRequestHandler<BodyType> implements RequestStre
 		try {
 			objectMapper.writeValue(outputStream,
 					new GatewayResponse<>(objectMapper.writeValueAsString(new ErrorMessage(details, SC_BAD_REQUEST)),
-							JSON_CONTENT, SC_BAD_REQUEST));
+							defaultHeader, SC_BAD_REQUEST));
 		}catch(IOException e) {
 
 		}

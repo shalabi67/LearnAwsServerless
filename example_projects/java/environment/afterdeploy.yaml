@@ -1,0 +1,101 @@
+#this is how the template looks like on AWS cloud formation
+AWSTemplateFormatVersion: 2010-09-09
+Outputs:
+  MessageFunction:
+    Description: Message Lambda Function ARN
+    Value: !GetAtt
+      - MessageFunction
+      - Arn
+  MessageApi:
+    Description: API Gateway endpoint URL for Prod stage for Message function
+    Value: !Sub >-
+      https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/message/
+Description: |
+  message
+  Sample SAM Template for message using environment variables MESSAGE
+Resources:
+  MessageFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Code:
+        S3Bucket: shalabi-sam
+        S3Key: 74117f5f23aa8d85cac465366462293a
+      FunctionName: shalabi-message-environment
+      Tags:
+        - Value: SAM
+          Key: 'lambda:createdBy'
+      Environment:
+        Variables:
+          MESSAGE: This is my message
+      Handler: 'com.sam.environment.MessageController::handleRequest'
+      Role: !GetAtt
+        - MessageFunctionRole
+        - Arn
+      Timeout: 20
+      Runtime: java8
+  ServerlessRestApiProdStage:
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      DeploymentId: !Ref ServerlessRestApiDeployment9d2ef5849f
+      RestApiId: !Ref ServerlessRestApi
+      StageName: Prod
+  ServerlessRestApiDeployment9d2ef5849f:
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref ServerlessRestApi
+      Description: 'RestApi deployment id: 9d2ef5849f23481dca3c361eaa39b404c31f38fb'
+      StageName: Stage
+  ServerlessRestApi:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Body:
+        info:
+          version: '1.0'
+          title: !Ref 'AWS::StackName'
+        paths:
+          /message:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub >-
+                  arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MessageFunction.Arn}/invocations
+              responses: {}
+        swagger: '2.0'
+  MessageFunctionMessagePermissionProd:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:invokeFunction'
+      Principal: apigateway.amazonaws.com
+      FunctionName: !Ref MessageFunction
+      SourceArn: !Sub
+        - >-
+          arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/GET/message
+        - __Stage__: Prod
+          __ApiId__: !Ref ServerlessRestApi
+  MessageFunctionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+  MessageFunctionMessagePermissionTest:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:invokeFunction'
+      Principal: apigateway.amazonaws.com
+      FunctionName: !Ref MessageFunction
+      SourceArn: !Sub
+        - >-
+          arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/GET/message
+        - __Stage__: '*'
+          __ApiId__: !Ref ServerlessRestApi
+

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>serverless</artifactId>
+        <groupId>com.labs</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>FaqApiUsingFramework</artifactId>
+
+    <profiles>
+        <profile>
+            <id>live</id>
+            <activation>
+                <property>
+                    <name>framework.env</name>
+                    <value>live</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.serverless</groupId>
+                    <artifactId>aws-framework</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>framework.env</name>
+                    <value>local</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.serverless</groupId>
+                    <artifactId>aws-local-framework</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.serverless</groupId>
+            <artifactId>framework-interfaces</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

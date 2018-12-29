@@ -1,0 +1,223 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    sam-super-mission
+
+    SAM Template for sam-super-mission using our framework.
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Api:
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    #Api:
+    #  Cors:
+    #    AllowMethods: "'POST, GET, OPTIONS'"
+    #    AllowOrigin: "'*'"
+    #   AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+
+    Function:
+        Timeout: 120
+        MemorySize: 150
+        Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+          Variables:
+        #    TABLE_NAME:
+        # for mac
+            #LOCAL_DYNAMODB_URL: http://docker.for.windows.localhost:8000
+        # for windows 7  the address 172.17.0.2 is from container inspect command, which is the address of the container
+        # you cal also use 192.168.99.100 which is the docker machine address in this case you need to enable a host only adapter on virtual machine.
+            LOCAL_DYNAMODB_URL: http://192.168.99.100:8000
+
+Resources:
+  GetSuperMissionsFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: target/super-mission-1.0-SNAPSHOT.jar
+      Handler: com.lab.supermission.lambda.GettingSuperMissions::handleRequest
+      Runtime: java8
+      Role: !GetAtt SuperMissionScanRole.Arn
+      #Policies:
+      #https://github.com/awslabs/serverless-application-model/blob/develop/examples/2016-10-31/policy_templates/all_policy_templates.yaml
+      #- CloudWatchPutMetricPolicy
+      Events:
+        CreateOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /missions
+            Method: get
+
+  GetSuperMissionFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: target/super-mission-1.0-SNAPSHOT.jar
+      Handler: com.lab.supermission.lambda.GettingSuperMission::handleRequest
+      Runtime: java8
+      Role: !GetAtt SuperMissionScanRole.Arn
+      Events:
+        CreateOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /missions/{superHero}
+            Method: get
+
+  AddSuperMissionFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: target/super-mission-1.0-SNAPSHOT.jar
+      Handler: com.lab.supermission.lambda.AddingSuperMission::handleRequest
+      Runtime: java8
+      Role: !GetAtt SuperMissionScanRole.Arn
+      Events:
+        CreateOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /missions
+            Method: post
+
+  SuperMissionTable:
+      Type: AWS::Serverless::SimpleTable
+      Properties:
+        #notivce table name is the same as the one used in models.Questions class
+        TableName: lab-super-missions
+        PrimaryKey:
+           Name: superHero
+           Type: String
+        ProvisionedThroughput:
+           ReadCapacityUnits: 5
+           WriteCapacityUnits: 5
+
+  SuperMissionScanRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: SuperMissionScanRole
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        Path: /
+
+  SuperMissionScanPolicy:
+      Type: AWS::IAM::Policy
+      #DependsOn: [SuperMissionScanRole]
+      Properties:
+        PolicyName: SuperMissionScanPolicy
+        Roles:
+          - Ref: "SuperMissionScanRole"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:PutObject
+                - dynamodb:PutItem
+                - dynamodb:Scan
+                - dynamodb:BatchWriteItem
+              Resource: "*"
+
+  SuperMissionQueryRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: SuperMissionQueryRole
+        ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        Path: /
+
+  SuperMissionQueryPolicy:
+      Type: AWS::IAM::Policy
+      #DependsOn: [SuperMissionQueryRole]
+      Properties:
+        PolicyName: SuperMissionQueryPolicy
+        Roles:
+          - Ref: "SuperMissionQueryRole"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Condition:
+                ForAllValues:StringEquals:
+                  dynamodb:Attributes:
+                    - SuperHero
+                    - MissionStatus
+                    - Villain1
+                    - Villain2
+                    - Villain3
+              Action:
+                - dynamodb:Query
+              Resource: "*"
+              Effect: Allow
+
+  CloudWatchPolicy:
+        Type: AWS::IAM::Policy
+        DependsOn: [SuperMissionScanRole]
+        Properties:
+          PolicyName: CloudWatchPolicy
+          Roles:
+            - Ref: "SuperMissionScanRole"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+                # !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+                #!Sub "arn:aws:logs:${AWS::Region}:${GetSuperMissionsFunction}:*"
+                Effect: Allow
+              #-
+              #  Effect: Allow
+              #  Action:
+              #    - logs:CreateLogStream
+              #    - logs:PutLogEvents
+              #  Resource:
+              #    - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*:*"
+                  #!Sub "arn:aws:logs:${AWS::Region}:${GetSuperMissionsFunction}:log-group:/aws/lambda/*:*"
+
+Outputs:
+    FaqApi:
+      Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+      #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/missions/"
+
+    GetSuperMissionsFunction:
+      Description: "GetSuperMissionsFunction Lambda Function ARN"
+      Value: !GetAtt GetSuperMissionsFunction.Arn
+
+    AddSuperMissionFunction:
+          Description: "AddSuperMissionFunction Lambda Function ARN"
+          Value: !GetAtt AddSuperMissionFunction.Arn
+
+    GetSuperMissionFunction:
+          Description: "GetSuperMissionFunction Lambda Function ARN"
+          Value: !GetAtt GetSuperMissionFunction.Arn
+
+
+    SuperMissionQueryRole:
+          Description: "SuperMissionQueryRole role ARN"
+          Value: !GetAtt SuperMissionQueryRole.Arn
+
+    SuperMissionScanRole:
+              Description: "SuperMissionScanRole role ARN"
+              Value: !GetAtt SuperMissionScanRole.Arn

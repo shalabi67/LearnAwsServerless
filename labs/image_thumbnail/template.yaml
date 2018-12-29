@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    Image thumbnail
+    This project takes an image from s3 backet generate a thumbnail and write it back to another s3 bucket
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 20
+
+
+Mappings:
+  Names:
+    S3BucketName:
+      Input: lab-thumbnail-images
+      Output: lab-thumbnail-images-resized
+
+Resources:
+#    ImageResizePolicy:
+#      Type: AWS::IAM::Policy
+#      Properties:
+#        PolicyName: root
+#        PolicyDocument:
+#          Version: 2012-10-17
+ #         Statement:
+#            -
+#              Effect: Allow
+ #             Action: s3:*
+  #            Resource: '*'
+
+    ImageResizeFunction:
+        #https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            FunctionName: lab-image-resize
+            CodeUri: CreateThumbnail.zip
+            Handler: CreateThumbnail.handler
+            Runtime: python3.6
+            Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+                Variables:
+                    MESSAGE: This is my message
+
+            #Role: 'arn:aws:iam::892579566360:role/service-role/LamdaExecute'
+
+            #https://github.com/awslabs/serverless-application-model/blob/master/docs/policy_templates.rst
+            Policies:
+              - S3CrudPolicy:
+                  BucketName: !Ref OutputBucket
+              - S3CrudPolicy:
+                  #we can not reference this because it will cause cyclic dependency
+                  BucketName: !FindInMap [Names, S3BucketName, Input]
+
+            Events:
+                ImageResize:
+                    Type: S3 # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#s3
+                    Properties:
+                        #Bucket: lab-thumbnail-images-input
+                        Bucket:
+                          Ref: InputBucket
+                        Events: s3:ObjectCreated:*
+
+    InputBucket:
+      Type: 'AWS::S3::Bucket'
+      Properties:
+        BucketName: !FindInMap [Names, S3BucketName, Input]
+
+    OutputBucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          BucketName: !FindInMap [Names, S3BucketName, Output]
+
+
+Outputs:
+    ImageResizeFunction:
+      Description: "ImageResize Lambda Function ARN"
+      Value: !GetAtt ImageResizeFunction.Arn
+
+
+

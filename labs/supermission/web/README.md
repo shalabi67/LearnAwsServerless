@@ -10,4 +10,5 @@ web
     apiClient.js
     index.html
 
-
+##Notice
+if this nis the first call to lambda then this will take time. please wait.

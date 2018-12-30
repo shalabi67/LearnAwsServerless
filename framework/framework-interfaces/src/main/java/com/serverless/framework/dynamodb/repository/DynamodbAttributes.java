@@ -1,6 +1,8 @@
 package com.serverless.framework.dynamodb.repository;
 
+import software.amazon.awssdk.services.dynamodb.model.AttributeAction;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValueUpdate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +77,14 @@ public class DynamodbAttributes {
         attributesMap.put(key, AttributeValue.builder().m(map).build());
     }
 
+    public  void putObject(String key, Map<String, AttributeValue> value) {
+        if (value == null || key == null) {
+            return;
+        }
+
+        attributesMap.put(key, AttributeValue.builder().m(value).build());
+    }
+
     public List<String> getList(String key) {
         List<String> value = get(key, AttributeValue::ss);
         return value;
@@ -86,6 +96,19 @@ public class DynamodbAttributes {
         attributesMap.put(key, AttributeValue.builder().ss(value).build());
     }
 
+    public HashMap<String,AttributeValueUpdate> getUpdateAttributes() {
+        HashMap<String,AttributeValueUpdate> map = new HashMap<String,AttributeValueUpdate>();
+        for(String key : attributesMap.keySet()) {
+            AttributeValueUpdate attribute = AttributeValueUpdate.builder()
+                    .value(attributesMap.get(key))
+                    .action(AttributeAction.PUT)
+                    .build();
+            map.put(key, attribute);
+        }
+
+        return map;
+    }
+
     private <T> T get(String key, Function<AttributeValue, T> function) {
         AttributeValue value = attributesMap.get(key);
         if(value != null) {
@@ -94,5 +117,6 @@ public class DynamodbAttributes {
 
         return null;
     }
+
 
 }

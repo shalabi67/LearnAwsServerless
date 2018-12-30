@@ -84,6 +84,16 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 		return newModel;
 	}
 
+	public void update(DynamodbAttributes keyAttributes, DynamodbAttributes updateAttributes, Model model) {
+		UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+				.tableName(model.getTableName())
+				.key(keyAttributes.getAttributesMap())
+				.attributeUpdates(updateAttributes.getUpdateAttributes())
+				.build();
+
+		dynamoDbClient.updateItem(updateRequest);
+	}
+
 	private Model getModel(Model model) {
 		Model newModel;
 		try {

@@ -9,13 +9,11 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
 
-@Getter
-@Setter
 public class Movie extends BaseModule<Long> {
     private static final String TABLE_NAME = "learn-movies";
     public static final String YEAR = "year";
     public static final String TITLE = "title";
-    private static final String INFO = "info";
+    public static final String INFO = "info";
     private Long year;
     private String title;
     @JsonProperty("info")
@@ -56,4 +54,27 @@ public class Movie extends BaseModule<Long> {
     }
 
 
+    public Long getYear() {
+        return year;
+    }
+
+    public void setYear(Long year) {
+        this.year = year;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public MovieInformation getMovieInformation() {
+        return movieInformation;
+    }
+
+    public void setMovieInformation(MovieInformation movieInformation) {
+        this.movieInformation = movieInformation;
+    }
 }

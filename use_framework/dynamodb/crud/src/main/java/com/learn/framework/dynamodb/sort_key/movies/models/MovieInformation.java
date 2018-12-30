@@ -15,7 +15,7 @@ import java.util.Map;
 public class MovieInformation implements BasicModel {
     private static final String DIRECTORS = "directors";
     private static final String RELEASE_DATE = "release_date";
-    private static final String RATING = "rating";
+    public static final String RATING = "rating";
     private static final String GENRES = "genres";
     private static final String IMAGE_URL = "image_url";
     private static final String RANK = "rank";
@@ -70,4 +70,75 @@ public class MovieInformation implements BasicModel {
     }
 
 
+    public List<String> getDirectors() {
+        return directors;
+    }
+
+    public void setDirectors(List<String> directors) {
+        this.directors = directors;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public Float getRating() {
+        return rating;
+    }
+
+    public void setRating(Float rating) {
+        this.rating = rating;
+    }
+
+    public List<String> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
+    public Integer getRunningTimeSeconds() {
+        return runningTimeSeconds;
+    }
+
+    public void setRunningTimeSeconds(Integer runningTimeSeconds) {
+        this.runningTimeSeconds = runningTimeSeconds;
+    }
+
+    public List<String> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<String> actors) {
+        this.actors = actors;
+    }
+
+    public String getPlot() {
+        return plot;
+    }
+
+    public void setPlot(String plot) {
+        this.plot = plot;
+    }
 }

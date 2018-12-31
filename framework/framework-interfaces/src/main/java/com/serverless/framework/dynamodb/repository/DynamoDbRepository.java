@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.serverless.framework.dynamodb.repository.BaseModule.ID;
-
 public abstract class DynamoDbRepository<Model extends  BaseModule> {
 	private static String BEAN_NAME = "DYNAMODB_CLIENT";
 	protected DynamoDbClient dynamoDbClient;
@@ -31,7 +29,7 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 				dynamoDbClient.putItem(PutItemRequest.builder()
 						.tableName(model.getTableName())
 						.item(item)
-						.conditionExpression("attribute_not_exists(orderId)")
+						//.conditionExpression("attribute_not_exists(orderId)")
 						.build());
 				return model;
 			} catch (ConditionalCheckFailedException e) {
@@ -60,10 +58,11 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 		return list;
 	}
 
-	public Model find(String id, Model model) {
-		DynamodbAttributes keyAttributes = new DynamodbAttributes();
-		keyAttributes.putString(model.getKeyName(), id);
+	public Model find(Model model) {
+		return find(model.getKey(), model);
+	}
 
+	public Model find(DynamodbAttributes keyAttributes, Model model) {
 		GetItemRequest itemRequest = GetItemRequest
 				.builder()
 				.tableName(model.getTableName())
@@ -78,6 +77,43 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 		newModel.read(response.item());
 
 		return newModel;
+	}
+
+    /**
+     * this method will be used if you want to update all model fields
+     * @param model
+     */
+    public void update(Model model) {
+        update(model.getKey(), new DynamodbAttributes(model, true), model);
+    }
+
+    /**
+     * Use this method if you want to update specific fields.
+     * @param updateAttributes
+     * @param model
+     */
+    public void update(DynamodbAttributes updateAttributes, Model model) {
+        update(model.getKey(), updateAttributes, model);
+    }
+	public void update(DynamodbAttributes keyAttributes, DynamodbAttributes updateAttributes, Model model) {
+		UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+				.tableName(model.getTableName())
+				.key(keyAttributes.getAttributesMap())
+				.attributeUpdates(updateAttributes.getUpdateAttributes())
+				.build();
+
+		dynamoDbClient.updateItem(updateRequest);
+	}
+
+	public void update(UpdateItemRequest.Builder itemUpdateBuilder) {
+		UpdateItemRequest updateRequest = itemUpdateBuilder.build();
+		dynamoDbClient.updateItem(updateRequest);
+	}
+	public UpdateItemRequest.Builder getItemUpdateBuilder(Model model) {
+		return UpdateItemRequest.builder()
+				.tableName(model.getTableName())
+				.key(model.getKey().getAttributesMap());
+				//.attributeUpdates(new DynamodbAttributes(model, true).getUpdateAttributes());
 	}
 
 	private Model getModel(Model model) {

@@ -4,10 +4,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeAction;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValueUpdate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -19,6 +16,18 @@ public class DynamodbAttributes {
     }
     public DynamodbAttributes(Map<String, AttributeValue> attributesMap) {
         this.attributesMap = attributesMap;
+    }
+
+    public DynamodbAttributes(BaseModule module, Boolean removeKeys) {
+        Map<String, AttributeValue> keyMap = module.createKey().getAttributesMap();
+        Map<String, AttributeValue> attributes = module.save();
+        if(removeKeys) {
+            for (String keyName : keyMap.keySet()) {
+                attributes.remove(keyName);
+            }
+        }
+
+        this.attributesMap = attributes;
     }
 
     public Map<String, AttributeValue> getAttributesMap() {
@@ -64,6 +73,17 @@ public class DynamodbAttributes {
         return Float.parseFloat(value);
     }
 
+    public List<String> getEnum(String key) {
+        List<String> value = get(key, AttributeValue::ss);
+        return value;
+    }
+    public void putEnum(String key, List<String> value) {
+        if (value == null || key == null) {
+            return;
+        }
+        attributesMap.put(key, AttributeValue.builder().ss(value).build());
+    }
+
     public <T extends BasicModel> T getObject(String key, T object) {
         Map<String, AttributeValue> value = get(key, AttributeValue::m);
         object.read(value);
@@ -86,14 +106,22 @@ public class DynamodbAttributes {
     }
 
     public List<String> getList(String key) {
-        List<String> value = get(key, AttributeValue::ss);
-        return value;
+        List<AttributeValue> value = get(key, AttributeValue::l);
+        List<String> list = new ArrayList<>();
+        for(AttributeValue attributeValue : value) {
+            list.add(get(attributeValue, AttributeValue::s));
+        }
+        return list;
     }
     public void putList(String key, List<String> value) {
         if (value == null || key == null) {
             return;
         }
-        attributesMap.put(key, AttributeValue.builder().ss(value).build());
+        List<AttributeValue> list = new ArrayList<>();
+        for(String s : value) {
+            list.add(AttributeValue.builder().s(s).build());
+        }
+        attributesMap.put(key, AttributeValue.builder().l(list).build());
     }
 
     public HashMap<String,AttributeValueUpdate> getUpdateAttributes() {
@@ -116,6 +144,10 @@ public class DynamodbAttributes {
         }
 
         return null;
+    }
+
+    private <T> T get( AttributeValue value, Function<AttributeValue, T> function) {
+        return function.apply(value);
     }
 
 

@@ -6,5 +6,5 @@ import java.util.Map;
 
 public interface BasicModel {
     void read(Map<String, AttributeValue> stringAttributeValueMap);
-    Map<String, AttributeValue> save();;
+    Map<String, AttributeValue> save();
 }

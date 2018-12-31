@@ -5,28 +5,23 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
 
-public abstract class BaseModule<T> implements BasicModel {
-	protected static final String ID = "id";
+public abstract class BaseModule implements BasicModel {
+    @JsonIgnore
+    protected DynamodbAttributes key;
 
-	protected T id;
     @JsonIgnore
 	protected String tableName;
 
-	protected BaseModule() {
-		id = createId();
-	}
-	protected abstract T createId();
+    protected BaseModule() {
+    }
 
-	public T getId() {
-		return id;
-	}
+	protected abstract DynamodbAttributes createKey();
 
 	public String getTableName() {
 		return tableName;
 	}
 
-	@JsonIgnore
-	public String getKeyName() {
-		return ID;
-	}
+    public DynamodbAttributes getKey() {
+        return createKey();
+    }
 }

@@ -9,9 +9,19 @@ public class FindMovieExample {
     public static void main(String[] args) {
         MoviesRepository moviesRepository = new MoviesRepository(new DynamodbClientFactory());
         DynamodbAttributes dynamodbAttributes = new DynamodbAttributes();
-        dynamodbAttributes.putNumber(Movie.YEAR, "2011");
-        dynamodbAttributes.putString(Movie.TITLE, "Bridesmaids");
+        dynamodbAttributes.putNumber(Movie.YEAR, 1944L);
+        dynamodbAttributes.putString(Movie.TITLE, "Lifeboat");
         Movie movie = moviesRepository.find(dynamodbAttributes, new Movie());
+        if(movie == null) {
+            System.out.println("Could not find movie.");
+        } else {
+            System.out.println("movie found.");
+        }
+
+
+
+        //a simpler way
+        movie = moviesRepository.find(new Movie(1944L, "Lifeboat"));
         if(movie == null) {
             System.out.println("Could not find movie.");
         } else {

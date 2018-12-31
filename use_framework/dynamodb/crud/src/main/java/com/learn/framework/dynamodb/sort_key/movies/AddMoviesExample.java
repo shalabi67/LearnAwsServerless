@@ -13,7 +13,18 @@ import java.util.List;
 public class AddMoviesExample {
     public static void main(String[] args) {
         ClassLoader classLoader = new AddMoviesExample().getClass().getClassLoader();
-        File file = new File(classLoader.getResource("movies.json").getFile());
+
+        File file = new File(classLoader.getResource("movie.json").getFile());
+        try {
+            Movie movie = new ObjectMapper().readValue(file, new TypeReference<Movie>(){});
+            MoviesRepository moviesRepository = new MoviesRepository(new DynamodbClientFactory());
+
+            moviesRepository.save(movie);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        file = new File(classLoader.getResource("movies.json").getFile());
         try {
             List<Movie> list = new ObjectMapper().readValue(file, new TypeReference<List<Movie>>(){});
             MoviesRepository moviesRepository = new MoviesRepository(new DynamodbClientFactory());
@@ -25,5 +36,8 @@ public class AddMoviesExample {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+
     }
 }

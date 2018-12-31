@@ -3,13 +3,11 @@ package com.learn.framework.dynamodb.sort_key.movies.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.serverless.framework.dynamodb.repository.BaseModule;
 import com.serverless.framework.dynamodb.repository.DynamodbAttributes;
-import lombok.Getter;
-import lombok.Setter;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
 
-public class Movie extends BaseModule<Long> {
+public class Movie extends BaseModule {
     private static final String TABLE_NAME = "learn-movies";
     public static final String YEAR = "year";
     public static final String TITLE = "title";
@@ -21,6 +19,20 @@ public class Movie extends BaseModule<Long> {
 
     public Movie() {
         tableName = TABLE_NAME;
+    }
+    public Movie(Long year, String title) {
+        tableName = TABLE_NAME;
+        this.setTitle(title);
+        this.setYear(year);
+    }
+
+    @Override
+    protected DynamodbAttributes createKey() {
+        DynamodbAttributes key = new DynamodbAttributes();
+        key.putNumber(YEAR, year);
+        key.putString(TITLE, title);
+
+        return key;
     }
 
     @Override
@@ -40,19 +52,6 @@ public class Movie extends BaseModule<Long> {
 
         return attributes.getAttributesMap();
     }
-
-
-
-    @Override
-    protected Long createId() {
-        return year;
-    }
-
-    @Override
-    public String getKeyName() {
-        return YEAR;
-    }
-
 
     public Long getYear() {
         return year;

@@ -19,6 +19,8 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 		if(beansFactory.get(BEAN_NAME) == null) {
 			dynamoDbClient = dynamoDbClientFactory.create();
 			beansFactory.put(BEAN_NAME, dynamoDbClient);
+		}else {
+			dynamoDbClient = beansFactory.get(BEAN_NAME);
 		}
 	}
 	public Model save(Model model) {
@@ -64,10 +66,17 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 	}
 
 	public Model find(DynamodbAttributes keyAttributes, Model model) {
-		GetItemRequest itemRequest = GetItemRequest
+		GetItemRequest.Builder builder =  GetItemRequest
 				.builder()
 				.tableName(model.getTableName())
-				.key(keyAttributes.getAttributesMap())
+				.key(keyAttributes.getAttributesMap());
+		if(model.getProjectionExpression()!=null && (!model.getProjectionExpression().isEmpty())) {
+			builder.projectionExpression(model.getProjectionExpression());
+			if(model.getExpressionAttributeNames()!=null && model.getExpressionAttributeNames().size()>0) {
+				builder.expressionAttributeNames(model.getExpressionAttributeNames());
+			}
+		}
+		GetItemRequest itemRequest = builder
 				.build();
 		GetItemResponse response = dynamoDbClient.getItem(itemRequest);
 		if(response == null) {

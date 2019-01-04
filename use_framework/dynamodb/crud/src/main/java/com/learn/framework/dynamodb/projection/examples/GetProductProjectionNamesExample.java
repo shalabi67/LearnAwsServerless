@@ -5,6 +5,7 @@ import com.learn.framework.dynamodb.no_sort_key.repositories.BicycleRepository;
 import com.learn.framework.dynamodb.projection.model.ProductProjection;
 import com.learn.framework.dynamodb.projection.repositories.ProductProjectionRepository;
 import com.serverless.framework.dynamodb.factories.DynamodbClientFactory;
+import com.serverless.framework.dynamodb.projection.Projection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,14 +18,13 @@ public class GetProductProjectionNamesExample {
         //a simpler way no code needed for model or repository
         BicycleRepository bicycleRepository = new BicycleRepository(new DynamodbClientFactory());
         Bicycle bicycleModel = new Bicycle(123L);
-        bicycleModel.setProjectionExpression("#safty");
-        bicycleModel.setExpressionAttributeNames(map);
+        bicycleModel.setProjection(new Projection("#safty", map));
         Bicycle bicycle = bicycleRepository.find(bicycleModel);
 
         Map<String, String> map1 = new HashMap<>();
         map1.put("#pr","ProductReviews");
-        bicycleModel.setExpressionAttributeNames(map1);
-        bicycleModel.setProjectionExpression("#pr.FiveStar, #pr.ThreeStar, #pr.OneStar");
+
+        bicycleModel.setProjection(new Projection("#pr.FiveStar, #pr.ThreeStar, #pr.OneStar", map1));
         bicycle = bicycleRepository.find(bicycleModel);
     }
 }

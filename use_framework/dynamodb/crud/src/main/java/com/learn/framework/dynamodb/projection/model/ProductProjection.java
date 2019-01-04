@@ -5,6 +5,7 @@ import com.learn.framework.dynamodb.no_sort_key.models.Bicycle;
 import com.learn.framework.dynamodb.no_sort_key.models.ProductCatalog;
 import com.learn.framework.dynamodb.no_sort_key.models.Review;
 import com.serverless.framework.dynamodb.factories.types.DynamoTypeEnum;
+import com.serverless.framework.dynamodb.projection.Projection;
 import com.serverless.framework.dynamodb.repository.BaseModule;
 import com.serverless.framework.dynamodb.repository.DynamodbAttributes;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -29,11 +30,14 @@ public class ProductProjection extends BaseModule {
     private List<Long> relatedItems;
 
     public ProductProjection() {
-        projectionExpression = "Description, RelatedItems[0], ProductReviews.FiveStar";
+        setProjection(createProjection());
     }
     public ProductProjection(Long id) {
         this.id = id;
-        projectionExpression = "Description, RelatedItems[0], ProductReviews.FiveStar";
+        setProjection(createProjection());
+    }
+    private Projection createProjection() {
+        return new Projection("Description, RelatedItems[0], ProductReviews.FiveStar", null);
     }
 
     @Override

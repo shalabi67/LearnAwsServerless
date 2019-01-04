@@ -1,5 +1,10 @@
 [
   {
+    "Id": 456,
+    "ProductCategory": "Sporting Goods",
+    "Price": 650
+  },
+  {
     "BicycleType": "Hybrid",
     "Brand": "Brand-Company C",
     "Color": [

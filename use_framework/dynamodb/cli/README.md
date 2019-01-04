@@ -16,11 +16,21 @@ aws dynamodb batch-write-item --request-items file://ProductCatalog.json
 aws dynamodb get-item \
     --table-name learn-product-catalog \
     --key file://files/key.json \
-    --projection-expression "Description, RelatedItems[0], ProductReviews.FiveStar"
+    --projection-expression "Description, RelatedItems[0], ProductReviews.FiveStar" 
 
 aws dynamodb get-item --table-name learn-product-catalog --key file://files/key.json --projection-expression "Description, RelatedItems[0], ProductReviews.FiveStar"
  
  ###Expression attribute names
+ ####Example 1
+ aws dynamodb get-item \
+     --table-name learn-product-catalog \
+     --key '{"Id":{"N":"123"}}' \
+     --projection-expression "#sw" \
+     --expression-attribute-names '{"#sw":"Safety.Warning"}'
+
+aws dynamodb get-item --table-name learn-product-catalog --key "{\"Id\":{\"N\":\"123\"}}" --projection-expression "#sw" --expression-attribute-names "{\"#sw\":\"Safety.Warning\"}"
+
+####Example 2 
  aws dynamodb get-item \
      --table-name learn-product-catalog \
      --key '{"Id":{"N":"123"}}' \
@@ -29,6 +39,15 @@ aws dynamodb get-item --table-name learn-product-catalog --key file://files/key.
      
      
 aws dynamodb  get-item --table-name learn-product-catalog --key "{\"Id\":{\"N\":\"123\"}}" --projection-expression "#pr.#1star" --expression-attribute-names "{\"#pr\":\"ProductReviews\", \"#1star\":\"OneStar\"}"
+
+####Example 3
+aws dynamodb get-item \
+    --table-name learn-product-catalog \
+    --key '{"Id":{"N":"123"}}' \
+    --projection-expression "#pr.FiveStar, #pr.ThreeStar, #pr.OneStar" \
+    --expression-attribute-names '{"#pr":"ProductReviews"}'
+
+aws dynamodb get-item  --table-name learn-product-catalog --key "{\"Id\":{\"N\":\"123\"}}" --projection-expression "#pr.FiveStar, #pr.ThreeStar, #pr.OneStar" --expression-attribute-names "{\"#pr\":\"ProductReviews\"}"
 
 
 ##challenge

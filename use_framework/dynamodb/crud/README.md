@@ -5,4 +5,5 @@ This project will show how to so that using:
  1- single hash key without sort. see Product category
  2- hash key and sort key.
  3- more than one index.
+ 4- projection
  

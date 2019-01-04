@@ -11,10 +11,10 @@ public class Bicycle extends ProductCatalog {
     private static final String BRAND = "Brand";
     private static final String COLOR = "Color";
     private static final String COMMENT = "Comment";
-    private static final String DESCRIPTION = "Description";
+    public static final String DESCRIPTION = "Description";
     private static final String IN_STOCK = "InStock";
     private static final String PICTURES = "Pictures";
-    private static final String RELATED_ITEMS = "RelatedItems";
+    public static final String RELATED_ITEMS = "RelatedItems";
     private static final String SAFETY_WARNING = "Safety.Warning";
 
     @JsonProperty("BicycleType")

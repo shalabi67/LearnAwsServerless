@@ -8,25 +8,25 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import java.util.Map;
 
 public abstract class ProductCatalog extends BaseModule {
-    private static final String TABLE_NAME = "learn-product-catalog";
+    public static final String TABLE_NAME = "learn-product-catalog";
     public static final String ID = "Id";
     private static final String PRICE = "Price";
     private static final String PRODUCT_CATEGORY = "ProductCategory";
-    private static final String PRODUCT_REVIEWS = "ProductReviews";
+    public static final String PRODUCT_REVIEWS = "ProductReviews";
     private static final String QUANTITY_ON_HAND = "QuantityOnHand";
     private static final String TITLE = "Title";
 
-    @JsonProperty("Id")
+    @JsonProperty(ID)
     private Long id;
-    @JsonProperty("Price")
+    @JsonProperty(PRICE)
     private Float price;
-    @JsonProperty("ProductCategory")
+    @JsonProperty(PRODUCT_CATEGORY)
     private String productCategory;
-    @JsonProperty("ProductReviews")
+    @JsonProperty(PRODUCT_REVIEWS)
     Review productReviews;
-    @JsonProperty("QuantityOnHand")
+    @JsonProperty(QUANTITY_ON_HAND)
     private Integer quantityOnHand;
-    @JsonProperty("Title")
+    @JsonProperty(TITLE)
     private String title;
 
     public ProductCatalog() {

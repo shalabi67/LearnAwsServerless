@@ -1,0 +1,43 @@
+[
+  {
+    "Authors": [
+      "Author1"
+    ],
+    "Dimensions": "8.5 x 11.0 x 0.5",
+    "Id": 101,
+    "InPublication": true,
+    "ISBN": "111-1111111111",
+    "PageCount": 500,
+    "Price": 2,
+    "ProductCategory": "Book",
+    "Title": "Book 101 Title"
+  },
+  {
+    "Authors": [
+      "Author1",
+      "Author2"
+    ],
+    "Dimensions": "8.5 x 11.0 x 0.8",
+    "Id": 102,
+    "InPublication": true,
+    "ISBN": "222-2222222222",
+    "PageCount": 600,
+    "Price": 20,
+    "ProductCategory": "Book",
+    "Title": "Book 102 Title"
+  },
+  {
+    "Authors": [
+      "Author1",
+      "Author2"
+    ],
+    "Dimensions": "8.5 x 11.0 x 1.5",
+    "Id": 103,
+    "InPublication": false,
+    "ISBN": "333-3333333333",
+    "PageCount": 600,
+    "Price": 2000,
+    "ProductCategory": "Book",
+    "Title": "Book 103 Title"
+  }
+]

@@ -18,13 +18,13 @@ public class Movie extends BaseModule {
     private MovieInformation movieInformation;
 
     public Movie() {
-        tableName = TABLE_NAME;
     }
-    public Movie(Long year, String title) {
-        tableName = TABLE_NAME;
+    public Movie(Long year, String title) { ;
         this.setTitle(title);
         this.setYear(year);
     }
+
+
 
     @Override
     protected DynamodbAttributes createKey() {
@@ -33,6 +33,11 @@ public class Movie extends BaseModule {
         key.putString(TITLE, title);
 
         return key;
+    }
+
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
     }
 
     @Override

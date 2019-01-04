@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: create movies table
+
+Resources:
+  ProductTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: learn-product-catalog
+        KeySchema:
+          -
+            AttributeName: Id
+            KeyType: HASH
+
+        AttributeDefinitions:
+          -
+            AttributeName: Id
+            AttributeType: N
+          -
+            AttributeName: Price
+            AttributeType: N
+          -
+            AttributeName: ProductCategory
+            AttributeType: S
+
+        GlobalSecondaryIndexes:
+          -
+            IndexName: ProductCategory-Price-index
+            KeySchema:
+              -
+                AttributeName: ProductCategory
+                KeyType: HASH
+              -
+                AttributeName: Price
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+
+
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        Tags:
+          - Key: Team
+            Value: Backend
+          - Key: Project
+            Value: Learn dynamodb
+          - Key: AppType
+            Value: Serverless
+  MoviesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: learn-movies
+        KeySchema:
+          -
+            AttributeName: year
+            KeyType: HASH
+          -
+            AttributeName: title
+            KeyType: RANGE
+
+        AttributeDefinitions:
+          -
+            AttributeName: year
+            AttributeType: N
+          -
+            AttributeName: title
+            AttributeType: S
+
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        Tags:
+          - Key: Team
+            Value: Backend
+          - Key: Project
+            Value: Learn dynamodb
+          - Key: AppType
+            Value: Serverless

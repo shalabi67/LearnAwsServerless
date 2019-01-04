@@ -1,4 +1,4 @@
-package com.learn.framework.dynamodb.sort_key.movies;
+package com.learn.framework.dynamodb.sort_key.movies.Examples;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

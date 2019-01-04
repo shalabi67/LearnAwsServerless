@@ -1,0 +1,103 @@
+[
+  {
+    "BicycleType": "Hybrid",
+    "Brand": "Brand-Company C",
+    "Color": [
+      "Red",
+      "Black"
+    ],
+    "Comment": "This product sells out quickly during the summer",
+    "Description": "123 description",
+    "Id": 123,
+    "InStock": true,
+    "Pictures": {
+      "FrontView": "http://example.com/products/123_front.jpg",
+      "RearView": "http://example.com/products/123_rear.jpg",
+      "SideView": "http://example.com/products/123_left_side.jpg"
+    },
+    "Price": 500,
+    "ProductCategory": "Bicycle",
+    "ProductReviews": {
+      "FiveStar": [
+        "Excellent! Can't recommend it highly enough! Buy it!",
+        "Do yourself a favor and buy this."
+      ],
+      "OneStar": [
+        "Terrible product! Do not buy this."
+      ]
+    },
+    "QuantityOnHand": null,
+    "RelatedItems": [
+      341,
+      472,
+      649
+    ],
+    "Safety.Warning": "Always wear a helmet",
+    "Title": "Bicycle 123"
+  },
+  {
+    "BicycleType": "Road",
+    "Brand": "Mountain A",
+    "Color": [
+      "Red",
+      "Black"
+    ],
+    "Description": "201 Description",
+    "Id": 201,
+    "Price": 100,
+    "ProductCategory": "Bicycle",
+    "Title": "18-Bike-201"
+  },
+  {
+    "BicycleType": "Road",
+    "Brand": "Brand-Company A",
+    "Color": [
+      "Green",
+      "Black"
+    ],
+    "Description": "202 Description",
+    "Id": 202,
+    "Price": 200,
+    "ProductCategory": "Bicycle",
+    "Title": "21-Bike-202"
+  },
+  {
+    "BicycleType": "Road",
+    "Brand": "Brand-Company B",
+    "Color": [
+      "Red",
+      "Green",
+      "Black"
+    ],
+    "Description": "203 Description",
+    "Id": 203,
+    "Price": 300,
+    "ProductCategory": "Bicycle",
+    "Title": "19-Bike-203"
+  },
+  {
+    "BicycleType": "Mountain",
+    "Brand": "Brand-Company B",
+    "Color": [
+      "Red"
+    ],
+    "Description": "204 Description",
+    "Id": 204,
+    "Price": 400,
+    "ProductCategory": "Bicycle",
+    "Title": "18-Bike-204"
+  },
+  {
+    "BicycleType": "Hybrid",
+    "Brand": "Brand-Company C",
+    "Color": [
+      "Red",
+      "Black"
+    ],
+    "Description": "205 Description",
+    "Id": 205,
+    "Price": 500,
+    "ProductCategory": "Bicycle",
+    "Title": "18-Bike-204"
+  }
+]

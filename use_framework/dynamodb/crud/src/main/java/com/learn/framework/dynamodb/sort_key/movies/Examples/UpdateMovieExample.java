@@ -1,4 +1,4 @@
-package com.learn.framework.dynamodb.sort_key.movies;
+package com.learn.framework.dynamodb.sort_key.movies.Examples;
 
 import com.learn.framework.dynamodb.sort_key.movies.models.Movie;
 import com.learn.framework.dynamodb.sort_key.movies.repositories.MoviesRepository;

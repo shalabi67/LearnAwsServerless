@@ -1,6 +1,7 @@
 package com.learn.framework.dynamodb.sort_key.movies.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.serverless.framework.dynamodb.factories.types.DynamoTypeEnum;
 import com.serverless.framework.dynamodb.repository.BasicModel;
 import com.serverless.framework.dynamodb.repository.DynamodbAttributes;
 import lombok.Getter;
@@ -41,14 +42,14 @@ public class MovieInformation implements BasicModel {
     @Override
     public void read(Map<String, AttributeValue> map) {
         DynamodbAttributes attributes = new DynamodbAttributes(map);
-        directors = attributes.getList(DIRECTORS);
+        directors = attributes.getList(DIRECTORS, DynamoTypeEnum.string);
         releaseDate = attributes.getString(RELEASE_DATE);
         rating = attributes.getFloat(RATING);
-        genres = attributes.getList(GENRES);
+        genres = attributes.getList(GENRES, DynamoTypeEnum.string);
         imageUrl = attributes.getString(IMAGE_URL);
         rank = attributes.getInteger(RANK);
         runningTimeSeconds = attributes.getInteger(RUNNING_TIME_SECS);
-        actors = attributes.getList(ACTORS);
+        actors = attributes.getList(ACTORS, DynamoTypeEnum.string);
         plot = attributes.getString(PLOT);
     }
 
@@ -56,14 +57,14 @@ public class MovieInformation implements BasicModel {
     @Override
     public Map<String, AttributeValue> save() {
         DynamodbAttributes attributes = new DynamodbAttributes();
-        attributes.putList(DIRECTORS, directors);
+        attributes.putList(DIRECTORS, directors, DynamoTypeEnum.string);
         attributes.putString(RELEASE_DATE, releaseDate);
         attributes.putNumber(RATING, rating);
-        attributes.putList(GENRES, genres);
+        attributes.putList(GENRES, genres, DynamoTypeEnum.string);
         attributes.putString(IMAGE_URL, imageUrl);
         attributes.putNumber(RANK, rank);
         attributes.putNumber(RUNNING_TIME_SECS, runningTimeSeconds);
-        attributes.putList(ACTORS, actors);
+        attributes.putList(ACTORS, actors, DynamoTypeEnum.string);
         attributes.putString(PLOT, plot);
 
         return attributes.getAttributesMap();

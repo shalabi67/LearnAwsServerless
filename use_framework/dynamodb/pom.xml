@@ -17,6 +17,7 @@
 
     <modules>
         <module>crud</module>
+        <module>cli</module>
     </modules>
 
     <dependencyManagement>

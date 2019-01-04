@@ -3,6 +3,7 @@ package com.serverless.framework.dynamodb.repository;
 import com.serverless.framework.dynamodb.exceptions.ModelInstantiationException;
 import com.serverless.framework.dynamodb.factories.ClassFactory;
 import com.serverless.framework.dynamodb.factories.IDynamoDbClientFactory;
+import com.serverless.framework.dynamodb.factories.RequestBuilder;
 import com.serverless.framework.factories.BeansFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
@@ -49,6 +50,8 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 		ScanRequest.Builder scanBuilder = ScanRequest.builder()
 				.tableName(model.getTableName());
 
+		RequestBuilder.build(scanBuilder, model);
+
 		result = dynamoDbClient.scan(scanBuilder.build());
 		List<Model> list = result.items().stream()
 				.map((Map<String, AttributeValue> map) ->{
@@ -70,12 +73,8 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 				.builder()
 				.tableName(model.getTableName())
 				.key(keyAttributes.getAttributesMap());
-		if(model.getProjectionExpression()!=null && (!model.getProjectionExpression().isEmpty())) {
-			builder.projectionExpression(model.getProjectionExpression());
-			if(model.getExpressionAttributeNames()!=null && model.getExpressionAttributeNames().size()>0) {
-				builder.expressionAttributeNames(model.getExpressionAttributeNames());
-			}
-		}
+		RequestBuilder.build(builder, model);
+
 		GetItemRequest itemRequest = builder
 				.build();
 		GetItemResponse response = dynamoDbClient.getItem(itemRequest);

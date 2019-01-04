@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serverless.framework.dynamodb.filtering.Filter;
+import com.serverless.framework.dynamodb.projection.Projection;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
@@ -13,10 +15,11 @@ public abstract class BaseModule implements BasicModel {
     protected DynamodbAttributes key;
 
     @JsonIgnore
-    protected String projectionExpression;
+    private Projection projection;
 
     @JsonIgnore
-    protected Map<String, String> expressionAttributeNames;
+    private Filter filter;
+
 
     protected BaseModule() {
     }
@@ -29,28 +32,20 @@ public abstract class BaseModule implements BasicModel {
         return createKey();
     }
 
-    public String getProjectionExpression() {
-        return projectionExpression;
+    public Projection getProjection() {
+        return projection;
     }
 
-    public void setProjectionExpression(String projectionExpression) {
-        this.projectionExpression = projectionExpression;
+    public void setProjection(Projection projection) {
+        this.projection = projection;
     }
 
-    public Map<String, String> getExpressionAttributeNames() {
-        return expressionAttributeNames;
+    public Filter getFilter() {
+        return filter;
     }
 
-    public String getExpressionNames() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(expressionAttributeNames);
-        } catch (JsonProcessingException e) {
-            return "";
-        }
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 
-    public void setExpressionAttributeNames(Map<String, String> expressionAttributeNames) {
-        this.expressionAttributeNames = expressionAttributeNames;
-    }
 }

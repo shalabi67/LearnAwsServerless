@@ -1,9 +1,16 @@
 package com.serverless.framework.dynamodb.repository;
 
+import com.serverless.framework.dynamodb.factories.ClassFactory;
+import com.serverless.framework.dynamodb.factories.types.DynamoNumberType;
+import com.serverless.framework.dynamodb.factories.types.DynamoType;
+import com.serverless.framework.dynamodb.factories.types.DynamoTypeEnum;
+import com.serverless.framework.dynamodb.factories.types.DynamoTypeFactory;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import software.amazon.awssdk.services.dynamodb.model.AttributeAction;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValueUpdate;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -84,8 +91,22 @@ public class DynamodbAttributes {
         attributesMap.put(key, AttributeValue.builder().ss(value).build());
     }
 
+    public Boolean getBoolean(String key) {
+        Boolean value = get(key, AttributeValue::bool);
+        return value;
+    }
+    public void putBoolean(String key, Boolean value) {
+        if (value == null || key == null) {
+            return;
+        }
+        attributesMap.put(key, AttributeValue.builder().bool(value).build());
+    }
+
     public <T extends BasicModel> T getObject(String key, T object) {
         Map<String, AttributeValue> value = get(key, AttributeValue::m);
+        if(value == null) {
+            return null;
+        }
         object.read(value);
         return object;
     }
@@ -105,21 +126,72 @@ public class DynamodbAttributes {
         attributesMap.put(key, AttributeValue.builder().m(value).build());
     }
 
+    @Deprecated
     public List<String> getList(String key) {
+        return getList(key, DynamoTypeEnum.string);
+        /*
         List<AttributeValue> value = get(key, AttributeValue::l);
+        if(value == null) {
+            return new ArrayList<>();
+        }
         List<String> list = new ArrayList<>();
         for(AttributeValue attributeValue : value) {
             list.add(get(attributeValue, AttributeValue::s));
         }
         return list;
+        */
     }
+    @Deprecated
     public void putList(String key, List<String> value) {
+        putList(key, value, DynamoTypeEnum.string);
+        /*
         if (value == null || key == null) {
             return;
         }
         List<AttributeValue> list = new ArrayList<>();
         for(String s : value) {
             list.add(AttributeValue.builder().s(s).build());
+        }
+        attributesMap.put(key, AttributeValue.builder().l(list).build());
+        */
+    }
+
+    public <T> List<T> getList(String key, DynamoTypeEnum typeEnum) {
+        DynamoType<T> type = DynamoTypeFactory.create(typeEnum);
+        List<AttributeValue> value = get(key, AttributeValue::l);
+        if(value == null) {
+            return new ArrayList<>();
+        }
+        List<T> list = new ArrayList<>();
+        for(AttributeValue attributeValue : value) {
+            if(type instanceof DynamoNumberType) {
+                DynamoNumberType<String, T> numberType = (DynamoNumberType<String, T>) type;
+                String stringValue = (String)get(attributeValue, type.getTypeFunction());
+                if(stringValue == null) {
+                    continue;
+                }
+                list.add(numberType.getStringToNumberFunction().apply(stringValue));
+
+            } else {
+                list.add(get(attributeValue, type.getTypeFunction()));
+            }
+        }
+        return list;
+    }
+    public <T> void putList(String key, List<T> value, DynamoTypeEnum typeEnum) {
+        if (value == null || key == null) {
+            return;
+        }
+        DynamoType<T> type = DynamoTypeFactory.create(typeEnum);
+        List<AttributeValue> list = new ArrayList<>();
+        for(T s : value) {
+            if(type instanceof DynamoNumberType) {
+                DynamoNumberType<String, T> numberType = (DynamoNumberType<String, T>) type;
+                String item = numberType.getNumberToStringFunction().apply(s);
+                list.add(numberType.getBuilderFunction().apply(item).build());
+            }else {
+                list.add(type.getBuilderFunction().apply(s).build());
+            }
         }
         attributesMap.put(key, AttributeValue.builder().l(list).build());
     }

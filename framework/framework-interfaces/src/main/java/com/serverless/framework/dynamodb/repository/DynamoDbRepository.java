@@ -1,6 +1,7 @@
 package com.serverless.framework.dynamodb.repository;
 
 import com.serverless.framework.dynamodb.exceptions.ModelInstantiationException;
+import com.serverless.framework.dynamodb.factories.ClassFactory;
 import com.serverless.framework.dynamodb.factories.IDynamoDbClientFactory;
 import com.serverless.framework.factories.BeansFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -117,13 +118,6 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 	}
 
 	private Model getModel(Model model) {
-		Model newModel;
-		try {
-			newModel = (Model)model.getClass().newInstance();
-		} catch (Exception e) {
-			throw new ModelInstantiationException("Could not instantiate model of type " + model.getClass().getTypeName(), e);
-		}
-
-		return newModel;
+		return ClassFactory.createModel(model);
 	}
 }

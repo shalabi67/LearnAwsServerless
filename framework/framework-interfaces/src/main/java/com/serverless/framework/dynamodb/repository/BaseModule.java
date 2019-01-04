@@ -9,17 +9,12 @@ public abstract class BaseModule implements BasicModel {
     @JsonIgnore
     protected DynamodbAttributes key;
 
-    @JsonIgnore
-	protected String tableName;
-
     protected BaseModule() {
     }
 
 	protected abstract DynamodbAttributes createKey();
 
-	public String getTableName() {
-		return tableName;
-	}
+	public abstract String getTableName();
 
     public DynamodbAttributes getKey() {
         return createKey();

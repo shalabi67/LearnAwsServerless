@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serverless.framework.dynamodb.filtering.Filter;
+import com.serverless.framework.dynamodb.filtering.Update;
 import com.serverless.framework.dynamodb.projection.Projection;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
@@ -20,6 +21,8 @@ public abstract class BaseModule implements BasicModel {
     @JsonIgnore
     private Filter filter;
 
+    @JsonIgnore
+    private Update update;
 
     protected BaseModule() {
     }
@@ -48,4 +51,15 @@ public abstract class BaseModule implements BasicModel {
         this.filter = filter;
     }
 
+    public void setKey(DynamodbAttributes key) {
+        this.key = key;
+    }
+
+    public Update getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(Update update) {
+        this.update = update;
+    }
 }

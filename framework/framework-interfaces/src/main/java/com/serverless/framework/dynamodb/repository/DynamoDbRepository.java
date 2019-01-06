@@ -1,6 +1,5 @@
 package com.serverless.framework.dynamodb.repository;
 
-import com.serverless.framework.dynamodb.exceptions.ModelInstantiationException;
 import com.serverless.framework.dynamodb.factories.ClassFactory;
 import com.serverless.framework.dynamodb.factories.IDynamoDbClientFactory;
 import com.serverless.framework.dynamodb.factories.RequestBuilder;
@@ -92,7 +91,7 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
      * this method will be used if you want to update all model fields
      * @param model
      */
-    public void update(Model model) {
+    public void updateAll(Model model) {
         update(model.getKey(), new DynamodbAttributes(model, true), model);
     }
 
@@ -105,12 +104,11 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
         update(model.getKey(), updateAttributes, model);
     }
 	public void update(DynamodbAttributes keyAttributes, DynamodbAttributes updateAttributes, Model model) {
-		UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+		UpdateItemRequest.Builder builder = UpdateItemRequest.builder()
 				.tableName(model.getTableName())
 				.key(keyAttributes.getAttributesMap())
-				.attributeUpdates(updateAttributes.getUpdateAttributes())
-				.build();
-
+				.attributeUpdates(updateAttributes.getUpdateAttributes());
+        UpdateItemRequest updateRequest = builder.build();
 		dynamoDbClient.updateItem(updateRequest);
 	}
 
@@ -123,6 +121,11 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 				.tableName(model.getTableName())
 				.key(model.getKey().getAttributesMap());
 				//.attributeUpdates(new DynamodbAttributes(model, true).getUpdateAttributes());
+	}
+	public void update(Model model) {
+		UpdateItemRequest.Builder builder = getItemUpdateBuilder(model);
+		RequestBuilder.build(builder, model);
+		update(builder);
 	}
 
 	private Model getModel(Model model) {

@@ -25,10 +25,10 @@ public class DynamodbAttributes {
         this.attributesMap = attributesMap;
     }
 
-    public DynamodbAttributes(BaseModule module, Boolean removeKeys) {
+    public DynamodbAttributes(BaseModule module, Boolean removeTableKeys) {
         Map<String, AttributeValue> keyMap = module.createKey().getAttributesMap();
         Map<String, AttributeValue> attributes = module.save();
-        if(removeKeys) {
+        if(removeTableKeys) {
             for (String keyName : keyMap.keySet()) {
                 attributes.remove(keyName);
             }
@@ -194,6 +194,21 @@ public class DynamodbAttributes {
             }
         }
         attributesMap.put(key, AttributeValue.builder().l(list).build());
+    }
+
+    public DynamodbAttributes getMap(String key) {
+        return new DynamodbAttributes(get(key, AttributeValue::m));
+    }
+    public void putMap(String key, DynamodbAttributes attributes) {
+        if (attributes == null || key == null) {
+            return;
+        }
+        Map<String, AttributeValue> map = attributes.getAttributesMap();
+        if(map==null || map.size()<1) {
+            return;
+        }
+
+        attributesMap.put(key, AttributeValue.builder().m(map).build());
     }
 
     public HashMap<String,AttributeValueUpdate> getUpdateAttributes() {

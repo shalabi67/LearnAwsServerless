@@ -2,6 +2,7 @@ package com.serverless.framework.dynamodb.filtering;
 
 import com.serverless.framework.dynamodb.repository.DynamodbAttributes;
 import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
+import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 public class Filter {
     private String filterExpression;

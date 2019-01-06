@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serverless.framework.dynamodb.filtering.Filter;
 import com.serverless.framework.dynamodb.filtering.Update;
 import com.serverless.framework.dynamodb.projection.Projection;
+import com.serverless.framework.dynamodb.query.Query;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Map;
@@ -23,6 +24,9 @@ public abstract class BaseModule implements BasicModel {
 
     @JsonIgnore
     private Update update;
+
+    @JsonIgnore
+    private Query query;
 
     protected BaseModule() {
     }
@@ -61,5 +65,13 @@ public abstract class BaseModule implements BasicModel {
 
     public void setUpdate(Update update) {
         this.update = update;
+    }
+
+    public Query getQuery() {
+        return query;
+    }
+
+    public void setQuery(Query query) {
+        this.query = query;
     }
 }

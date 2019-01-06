@@ -4,9 +4,11 @@ import com.serverless.framework.dynamodb.factories.ClassFactory;
 import com.serverless.framework.dynamodb.factories.IDynamoDbClientFactory;
 import com.serverless.framework.dynamodb.factories.RequestBuilder;
 import com.serverless.framework.factories.BeansFactory;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -85,6 +87,56 @@ public abstract class DynamoDbRepository<Model extends  BaseModule> {
 		newModel.read(response.item());
 
 		return newModel;
+	}
+	public List<Model> findBy(Model model) {
+		QueryRequest.Builder builder = QueryRequest
+				.builder()
+				.tableName(model.getTableName());
+
+		RequestBuilder.build(builder, model);
+
+		List<Model> list = new ArrayList<>();
+		QueryResponse queryResponse = dynamoDbClient.query(builder.build());
+
+		for (Map<String, AttributeValue> item : queryResponse.items()) {
+			Model newModel = getModel(model);
+			newModel.read(item);
+			list.add(newModel);
+		}
+
+		return list;
+	}
+
+	/**
+	 * this is an example on how to uss paging
+	 * @param model
+	 * @return
+	 */
+	public List<Model> findByPaging(Model model) {
+		QueryRequest.Builder builder = QueryRequest
+				.builder()
+				.tableName(model.getTableName());
+
+		RequestBuilder.build(builder, model);
+
+        List<Model> list = new ArrayList<>();
+		while(true) {
+            QueryResponse queryResponse = dynamoDbClient.query(builder.build());
+
+            for (Map<String, AttributeValue> item : queryResponse.items()) {
+                Model newModel = getModel(model);
+                newModel.read(item);
+                list.add(newModel);
+            }
+
+            Map<String, AttributeValue> lastEvaluatedKey = queryResponse.lastEvaluatedKey();
+            if(lastEvaluatedKey == null || lastEvaluatedKey.size()<1 ) {
+                break;
+            }
+            builder.exclusiveStartKey(queryResponse.lastEvaluatedKey());
+        }
+
+		return list;
 	}
 
     /**

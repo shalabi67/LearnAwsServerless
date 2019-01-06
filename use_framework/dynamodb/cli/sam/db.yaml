@@ -80,3 +80,99 @@ Resources:
             Value: Learn dynamodb
           - Key: AppType
             Value: Serverless
+
+  ForumTable:
+    #https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template.html#serverless-sam-template-simpletable
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: learn-forum
+      PrimaryKey:
+        Name: Name
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  ThreadTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: learn-thread
+        KeySchema:
+          -
+            AttributeName: ForumName
+            KeyType: HASH
+          -
+            AttributeName: Subject
+            KeyType: RANGE
+
+        AttributeDefinitions:
+          -
+            AttributeName: ForumName
+            AttributeType: S
+          -
+            AttributeName: Subject
+            AttributeType: S
+
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        Tags:
+          - Key: Team
+            Value: Backend
+          - Key: Project
+            Value: Learn dynamodb
+          - Key: AppType
+            Value: Serverless
+
+  ReplyTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: learn-reply
+        KeySchema:
+          -
+            AttributeName: Id
+            KeyType: HASH
+          -
+            AttributeName: ReplyDateTime
+            KeyType: RANGE
+
+        AttributeDefinitions:
+          -
+            AttributeName: Id
+            AttributeType: S
+          -
+            AttributeName: ReplyDateTime
+            AttributeType: S
+          -
+            AttributeName: PostedBy
+            AttributeType: S
+          -
+            AttributeName: Message
+            AttributeType: S
+
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+        GlobalSecondaryIndexes:
+          -
+            IndexName: PostedBy-Price-index
+            KeySchema:
+              -
+                AttributeName: PostedBy
+                KeyType: HASH
+              -
+                AttributeName: Message
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+        Tags:
+          - Key: Team
+            Value: Backend
+          - Key: Project
+            Value: Learn dynamodb
+          - Key: AppType
+            Value: Serverless

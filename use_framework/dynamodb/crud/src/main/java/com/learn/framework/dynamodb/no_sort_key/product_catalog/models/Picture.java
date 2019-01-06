@@ -1,4 +1,4 @@
-package com.learn.framework.dynamodb.no_sort_key.models;
+package com.learn.framework.dynamodb.no_sort_key.product_catalog.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.serverless.framework.dynamodb.repository.BasicModel;

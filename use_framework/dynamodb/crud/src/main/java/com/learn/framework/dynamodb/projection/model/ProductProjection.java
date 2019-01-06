@@ -1,9 +1,9 @@
 package com.learn.framework.dynamodb.projection.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.learn.framework.dynamodb.no_sort_key.models.Bicycle;
-import com.learn.framework.dynamodb.no_sort_key.models.ProductCatalog;
-import com.learn.framework.dynamodb.no_sort_key.models.Review;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.models.Bicycle;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.models.ProductCatalog;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.models.Review;
 import com.serverless.framework.dynamodb.factories.types.DynamoTypeEnum;
 import com.serverless.framework.dynamodb.projection.Projection;
 import com.serverless.framework.dynamodb.repository.BaseModule;
@@ -13,7 +13,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import java.util.List;
 import java.util.Map;
 
-import static com.learn.framework.dynamodb.no_sort_key.models.ProductCatalog.ID;
+import static com.learn.framework.dynamodb.no_sort_key.product_catalog.models.ProductCatalog.ID;
 
 public class ProductProjection extends BaseModule {
 

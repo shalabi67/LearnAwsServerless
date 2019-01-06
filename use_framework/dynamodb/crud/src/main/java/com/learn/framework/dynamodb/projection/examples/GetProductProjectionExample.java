@@ -1,9 +1,7 @@
 package com.learn.framework.dynamodb.projection.examples;
 
-import com.learn.framework.dynamodb.no_sort_key.models.Bicycle;
-import com.learn.framework.dynamodb.no_sort_key.models.Book;
-import com.learn.framework.dynamodb.no_sort_key.repositories.BicycleRepository;
-import com.learn.framework.dynamodb.no_sort_key.repositories.BookRepository;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.models.Bicycle;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.repositories.BicycleRepository;
 import com.learn.framework.dynamodb.projection.model.ProductProjection;
 import com.learn.framework.dynamodb.projection.repositories.ProductProjectionRepository;
 import com.serverless.framework.dynamodb.factories.DynamodbClientFactory;

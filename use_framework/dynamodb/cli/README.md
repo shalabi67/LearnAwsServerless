@@ -3,6 +3,7 @@ this example will show how to use CLI examples show in aws documentation. it wil
 to fill these tables with needed data you need to run java files defined in crud module.
 
 ##Run 
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SampleData.html
 ###create database on live
 run these commands from sam directory:
 sam package --template-file db.yaml --output-template-file packaged.yaml --s3-bucket shalabi-sam 
@@ -10,6 +11,57 @@ sam deploy --template-file packaged.yaml --stack-name learn-dynamodb-cli --capab
 
 ###fill data
 aws dynamodb batch-write-item --request-items file://ProductCatalog.json
+aws dynamodb batch-write-item --request-items file://Forum.json
+aws dynamodb batch-write-item --request-items file://Thread.json
+aws dynamodb batch-write-item --request-items file://Reply.json
+
+##Query Examples
+###Example 1: Query the Thread table for a particular ForumName
+aws dynamodb query \
+    --table-name learn-thread \
+    --key-condition-expression "ForumName = :name" \
+    --expression-attribute-values  '{":name":{"S":"Amazon DynamoDB"}}'
+    
+aws dynamodb query --table-name learn-thread --key-condition-expression "ForumName = :name" --expression-attribute-values  "{\":name\":{\"S\":\"Amazon DynamoDB\"}}"
+
+###Example 2: Query the Thread table for a particular ForumName (partition key), and a given Subject (sort key)
+aws dynamodb query \
+    --table-name learn-thread \
+    --key-condition-expression "ForumName = :name and Subject = :sub" \
+    --expression-attribute-values  file://files/query2_values.json
+    
+aws dynamodb query --table-name learn-thread --key-condition-expression "ForumName = :name and Subject = :sub" --expression-attribute-values  file://files/query2_values.json
+
+###Example 3: Query the Reply table for a particular Id (partition key), but return only those items whose ReplyDateTime (sort key) begins with certain characters
+aws dynamodb query \
+    --table-name learn-reply \
+    --key-condition-expression "Id = :id and begins_with(ReplyDateTime, :dt)" \
+    --expression-attribute-values  file://files/query3_values.json
+
+aws dynamodb query --table-name learn-reply --key-condition-expression "Id = :id and begins_with(ReplyDateTime, :dt)" --expression-attribute-values  file://files/query3_values.json
+    
+###Example 4
+aws dynamodb query \
+    --table-name learn-thread \
+    --key-condition-expression "ForumName = :fn" \
+    --filter-expression "#v >= :num" \
+    --expression-attribute-names '{"#v": "Views"}' \
+    --expression-attribute-values file://files/query4_values.json
+
+aws dynamodb query --table-name learn-thread --key-condition-expression "ForumName = :fn" --filter-expression "#v >= :num" --expression-attribute-names "{\"#v\": \"Views\"}" --expression-attribute-values file://files/query4_values.json   
+
+###Example 5: show how pagination works. notice the use of --debug
+
+aws dynamodb query --table-name learn-movies \
+    --projection-expression "title" \
+    --key-condition-expression "#y = :yyyy" \
+    --expression-attribute-names '{"#y":"year"}' \
+    --expression-attribute-values '{":yyyy":{"N":"1993"}}' \
+    --page-size 5 \
+    --debug
+    
+aws dynamodb query --table-name learn-movies --projection-expression "title" --key-condition-expression "#y = :yyyy" --expression-attribute-names "{\"#y\":\"year\"}" --expression-attribute-values "{\":yyyy\":{\"N\":\"1993\"}}" --page-size 5 --debug
+
 
 ##Examples ProductCatalog
 ###Projection

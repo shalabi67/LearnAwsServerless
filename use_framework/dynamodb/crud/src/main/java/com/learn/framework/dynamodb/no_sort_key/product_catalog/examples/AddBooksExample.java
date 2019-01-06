@@ -1,11 +1,9 @@
-package com.learn.framework.dynamodb.no_sort_key.examples;
+package com.learn.framework.dynamodb.no_sort_key.product_catalog.examples;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.learn.framework.dynamodb.no_sort_key.models.Book;
-import com.learn.framework.dynamodb.no_sort_key.repositories.BookRepository;
-import com.learn.framework.dynamodb.sort_key.movies.models.Movie;
-import com.learn.framework.dynamodb.sort_key.movies.repositories.MoviesRepository;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.models.Book;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.repositories.BookRepository;
 import com.serverless.framework.dynamodb.factories.DynamodbClientFactory;
 
 import java.io.File;

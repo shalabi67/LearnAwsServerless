@@ -1,7 +1,7 @@
-package com.learn.framework.dynamodb.no_sort_key.examples;
+package com.learn.framework.dynamodb.no_sort_key.product_catalog.examples;
 
-import com.learn.framework.dynamodb.no_sort_key.models.Bicycle;
-import com.learn.framework.dynamodb.no_sort_key.repositories.BicycleRepository;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.models.Bicycle;
+import com.learn.framework.dynamodb.no_sort_key.product_catalog.repositories.BicycleRepository;
 import com.serverless.framework.dynamodb.factories.DynamodbClientFactory;
 import com.serverless.framework.dynamodb.factories.types.DynamoTypeEnum;
 import com.serverless.framework.dynamodb.filtering.Update;

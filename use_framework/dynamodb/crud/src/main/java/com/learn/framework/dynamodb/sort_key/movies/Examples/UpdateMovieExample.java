@@ -31,6 +31,6 @@ public class UpdateMovieExample {
 
         //if you want to update all fields
         movie.getMovieInformation().setRating(7.0F);
-        moviesRepository.update(movie);
+        moviesRepository.updateAll(movie);
     }
 }

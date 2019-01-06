@@ -1,5 +1,12 @@
 [
   {
+    "Id": 789,
+    "ProductCategory": "Home Improvement",
+    "Price": 52,
+    "InStock": true,
+    "Brand": "Acme"
+  },
+  {
     "Id": 456,
     "ProductCategory": "Sporting Goods",
     "Price": 650
